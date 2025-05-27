@@ -1,5 +1,42 @@
 import { Clock } from './clock.js';
 import patterns from './patterns.json';
+import digits from './digits.json';
+
+// Digit positions for 4-digit display
+const DIGIT_POSITIONS = [
+  {startX: 1, startY: 1},  // First digit (HH)
+  {startX: 4, startY: 1},  // Second digit (HH)
+  {startX: 8, startY: 1},  // Third digit (MM)
+  {startX: 11, startY: 1}  // Fourth digit (MM)
+];
+
+function updateTimeDisplay() {
+  const now = new Date();
+  const timeDigits = now.getHours().toString().padStart(2, '0') + 
+                    now.getMinutes().toString().padStart(2, '0');
+
+  document.querySelectorAll('#clock-grid .clock-face canvas').forEach(canvas => {
+    const x = parseInt(canvas.dataset.x);
+    const y = parseInt(canvas.dataset.y);
+    
+    // Update only digit positions
+    for (let i = 0; i < 4; i++) {
+      const pos = DIGIT_POSITIONS[i];
+      if (x >= pos.startX && x < pos.startX + 3 &&
+          y >= pos.startY && y < pos.startY + 6) {
+        const digit = timeDigits[i];
+        const digitX = x - pos.startX;
+        const digitY = y - pos.startY;
+        
+        canvas.__clock.currentDigit = digit;
+        canvas.__clock.gridX = digitX;
+        canvas.__clock.gridY = digitY;
+        canvas.__clock.update();
+        return;
+      }
+    }
+  });
+}
 
 // Create grid of clocks
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,24 +47,44 @@ document.addEventListener('DOMContentLoaded', () => {
   gridContainer.style.gap = '10px';
   gridContainer.style.padding = '20px';
   
-  // Create 15x8 grid (120 clocks)
+  // Create full 15x8 grid
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 15; x++) {
-      const clockWrapper = document.createElement('div');
-      clockWrapper.style.display = 'flex';
-      clockWrapper.style.justifyContent = 'center';
+      const cell = document.createElement('div');
+      cell.className = 'clock-face';
       
-      const clock = new Clock(60, x, y);
-      clockWrapper.appendChild(clock.canvas);
-      gridContainer.appendChild(clockWrapper);
+      const canvas = document.createElement('canvas');
+      canvas.width = 60;
+      canvas.height = 60;
+      canvas.dataset.x = x;
+      canvas.dataset.y = y;
       
-      // Immediately update to show current time
-      clock.update();
+      // Initialize all cells
+      let isDigitCell = false;
+      for (let i = 0; i < 4; i++) {
+        const pos = DIGIT_POSITIONS[i];
+        if (x >= pos.startX && x < pos.startX + 3 &&
+            y >= pos.startY && y < pos.startY + 6) {
+          isDigitCell = true;
+          break;
+        }
+      }
+      
+      canvas.__clock = new Clock(canvas, 
+        isDigitCell ? 0 : null, 
+        isDigitCell ? 0 : null, 
+        isDigitCell ? '0' : null
+      );
+      cell.appendChild(canvas);
+      gridContainer.appendChild(cell);
     }
   }
   
   document.body.insertBefore(gridContainer, document.body.firstChild);
-  console.log('Clock grid ready - showing current time for 10 seconds');
+  
+  // Initial update and set interval
+  updateTimeDisplay();
+  setInterval(updateTimeDisplay, 1000);
 });
 
 // Main clock controller

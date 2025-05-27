@@ -24,12 +24,13 @@ export class Clock {
   }
 
   getCurrentTimePosition() {
-    // Skip edge rows if needed (adjust based on your grid layout)
-    if (this.gridY < 0 || this.gridY >= 6) {
+    // Return null for null inputs or edge positions
+    if (this.gridX === null || this.gridY === null || 
+        this.gridY < 0 || this.gridY >= 6) {
       return null;
     }
     
-    if (!digits[this.currentDigit] || 
+    if (!this.currentDigit || !digits[this.currentDigit] || 
         !digits[this.currentDigit][this.gridY] || 
         !digits[this.currentDigit][this.gridY][this.gridX]) {
       return null;
