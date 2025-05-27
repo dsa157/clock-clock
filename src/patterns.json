@@ -1,0 +1,34 @@
+[
+    {
+        "name": "horizontal",
+        "description": "",
+        "angles": {
+            "hour": "0",
+            "minute": "0"
+        }
+    },
+    {
+        "name": "vertical",
+        "description": "",
+        "angles": {
+            "hour": "90",
+            "minute": "90"
+        }
+    },
+    {
+        "name": "diagonal",
+        "description": "",
+        "angles": {
+            "hour": "45",
+            "minute": "225"
+        }
+    },
+    {
+        "name": "random",
+        "description": "",
+        "angles": {
+            "hour": "180",
+            "minute": "270"
+        }
+    }
+]

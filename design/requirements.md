@@ -25,6 +25,7 @@ Each clock face has:
 
 Behavior Cycle (Every Minute)
 Phase Name	Duration	Description
+Time Display	10 s	Clocks align hands to form digital HH:MM time
 Pre-Transition 1	~5 s	Clocks begin to shift, rotating hands in waves or ripples
 Intermediate Form 1	~5 s	Hands align to form abstract collective shapes
 Pre-Transition 2	~5 s	Clocks begin to shift, rotating hands in waves or ripples
@@ -35,7 +36,6 @@ Pre-Transition 4	~5 s	Clocks begin to shift, rotating hands in waves or ripples
 Intermediate Form 4	~5 s	Hands align to form abstract collective shapes
 Pre-Transition 5	~5 s	Clocks begin to shift, rotating hands in waves or ripples
 Intermediate Form 5	~5 s	Hands align to form abstract collective shapes
-Time Display	10 s	Clocks align hands to form digital HH:MM time
 
 Each of the 5 intermediate forms will be determined from an entry in patterns.json
 

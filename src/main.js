@@ -1,34 +1,260 @@
+import patterns from './patterns.json';
+
+console.log('[DEBUG] Main script loaded');
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[DEBUG] DOM fully loaded');
+    
+    const clockGrid = new ClockGrid('clock-grid');
+    console.log('[DEBUG] ClockGrid instance created');
+    
+    if (clockGrid.gridElement) {
+        console.log('[DEBUG] Container element found, starting animation');
+        clockGrid.startAnimation();
+    } else {
+        console.error('[DEBUG] Failed to find container element');
+    }
+});
+
 // Main clock controller
 class ClockGrid {
-    constructor() {
+    constructor(containerId) {
+        console.log('[DEBUG] Initializing ClockGrid for container:', containerId);
+        this.gridElement = document.getElementById(containerId);
+        console.log('[DEBUG] Container element:', this.gridElement);
+        
+        if (!this.gridElement) {
+            console.error('[DEBUG ERROR] Container not found:', containerId);
+            document.body.innerHTML = '<h1 style="color:red">ERROR: Missing #clock-grid</h1>';
+            return;
+        }
+        
+        console.log('[DEBUG] Initializing ClockGrid with visual debug mode');
+        
+        // Visual debug styling
+        document.body.style.backgroundColor = '#222';
+        this.gridElement.style.outline = '2px solid lime';
+        
         this.clocks = [];
         this.gridSize = {cols: 15, rows: 8};
+        this.currentState = 'TIME_DISPLAY';
+        this.stateStartTime = Date.now();
+        this.stateDurations = {
+            'TIME_DISPLAY': 10000,  // 10 sec time display
+            'PRE_TRANSITION': 1000, // 1 sec transition
+            'INTERMEDIATE_FORM': 10000 // 10 sec pattern display
+        };
+        this.stateDuration = this.stateDurations[this.currentState];
+        this.currentPatternIndex = 0;
+        this.lastDebugLog = null;
+        
+        // Load patterns from imported JSON
+        try {
+            if (!Array.isArray(patterns)) throw new Error('Invalid pattern format');
+            this.patterns = patterns;
+            console.log(`Loaded ${patterns.length} patterns from src`);
+        } catch (e) {
+            console.warn('Using fallback patterns:', e.message);
+            this.patterns = [{
+                name: "fallback",
+                angles: { hour: "0", minute: "0" }
+            }];
+        }
+        
         this.initGrid();
-        this.startAnimation();
+        console.log('[DEBUG] Clocks initialized');
     }
 
     initGrid() {
-        const grid = document.getElementById('clock-grid');
+        console.log('[DEBUG] Creating canvas elements');
         
         for (let row = 0; row < this.gridSize.rows; row++) {
             for (let col = 0; col < this.gridSize.cols; col++) {
                 const clock = new AnalogClock(col, row);
+                
+                // Visual debug
+                clock.element.style.border = '1px solid rgba(255,255,255,0.2)';
+                clock.element.style.boxSizing = 'border-box';
+                
                 this.clocks.push(clock);
-                grid.appendChild(clock.element);
+                this.gridElement.appendChild(clock.element);
+                
+                // Make clock at 0,0 show actual time, others show pattern
+                if (col === 0 && row === 0) {
+                    clock.update();
+                } else {
+                    clock.displayPattern(45, 180);
+                }
             }
         }
+        
+        console.log('[DEBUG] Grid initialized with', this.clocks.length, 'clocks');
     }
 
     startAnimation() {
+        //console.log('[DEBUG] Starting animation loop');
         const animate = () => {
             requestAnimationFrame(animate);
-            this.updateClocks();
+            try {
+                this.updateClocks();
+                //console.log('[DEBUG] Animation frame executed'); // Debug log
+            } catch (e) {
+                console.error('[DEBUG] Animation error:', e);
+            }
         };
         animate();
     }
 
+    calculateAngle(expression, clock) {
+        try {
+            // Simple number case
+            if (/^[-+]?\d*\.?\d+$/.test(expression)) {
+                return Number(expression) * Math.PI / 180;
+            }
+            
+            // Create evaluation context
+            const ctx = {
+                col: clock.col,
+                row: clock.row,
+                time: Date.now(),
+                PI: Math.PI,
+                // Math functions
+                sin: Math.sin,
+                cos: Math.cos,
+                tan: Math.tan,
+                sqrt: Math.sqrt,
+                pow: Math.pow,
+                random: Math.random
+            };
+            
+            // Tokenize and parse safely
+            const tokens = expression.match(/\b\w+\b|[-+*/()]|\d+\.?\d*/g) || [];
+            const stack = [];
+            const ops = [];
+            
+            // Shunting-yard algorithm for safe evaluation
+            for (const token of tokens) {
+                if (token in ctx) {
+                    stack.push(ctx[token]);
+                } else if (/^\d+\.?\d*$/.test(token)) {
+                    stack.push(Number(token));
+                } else if (token === '(') {
+                    ops.push(token);
+                } else if (token === ')') {
+                    while (ops.length && ops[ops.length-1] !== '(') {
+                        this.applyOp(stack, ops.pop());
+                    }
+                    ops.pop(); // Remove '('
+                } else {
+                    while (ops.length && this.precedence(ops[ops.length-1]) >= this.precedence(token)) {
+                        this.applyOp(stack, ops.pop());
+                    }
+                    ops.push(token);
+                }
+            }
+            
+            while (ops.length) {
+                this.applyOp(stack, ops.pop());
+            }
+            
+            // Convert to radians
+            return (stack[0] || 0) * Math.PI / 180;
+        } catch (e) {
+            console.warn('Angle calculation error:', e);
+            return 0;
+        }
+    }
+
+    precedence(op) {
+        switch(op) {
+            case '+': case '-': return 1;
+            case '*': case '/': return 2;
+            default: return 0;
+        }
+    }
+
+    applyOp(stack, op) {
+        const b = stack.pop();
+        const a = stack.pop();
+        switch(op) {
+            case '+': stack.push(a + b); break;
+            case '-': stack.push(a - b); break;
+            case '*': stack.push(a * b); break;
+            case '/': stack.push(a / b); break;
+        }
+    }
+
     updateClocks() {
-        this.clocks.forEach(clock => clock.update());
+        const now = new Date();
+        
+        // Debug logging (once per second)
+        if (!this.lastDebugLog || now - this.lastDebugLog >= 1000) {
+            this.lastDebugLog = now;
+            const debugClock = this.clocks.find(c => c.col === 0 && c.row === 0);
+            
+            if (debugClock) {
+                if (this.currentState === 'TIME_DISPLAY') {
+                    console.log(`[DEBUG] Clock (0,0) - State: ${this.currentState} Time: ${now.getHours()}h ${now.getMinutes()}m`);
+                } else {
+                    console.log(`[DEBUG] Clock (0,0) - State: ${this.currentState} ` +
+                        `Pattern: ${this.patterns[this.currentPatternIndex].name} ` +
+                        `(Angles: ${this.patterns[this.currentPatternIndex].angles.hour}°/${this.patterns[this.currentPatternIndex].angles.minute}°)`);
+                }
+            }
+        }
+        
+        // Apply current state
+        if (this.currentState === 'TIME_DISPLAY') {
+            const hours = (now.getHours() % 12) + (now.getMinutes() / 60);
+            const hoursAngle = hours * (Math.PI / 6);
+            const minutesAngle = now.getMinutes() * (Math.PI / 30);
+            
+            this.clocks.forEach(clock => {
+                clock.displayPattern(hoursAngle, minutesAngle);
+            });
+        } else {
+            const pattern = this.patterns[this.currentPatternIndex];
+            this.clocks.forEach(clock => {
+                const hoursAngle = this.calculateAngle(pattern.angles.hour, clock);
+                const minutesAngle = this.calculateAngle(pattern.angles.minute, clock);
+                clock.displayPattern(hoursAngle, minutesAngle);
+            });
+        }
+        
+        // State transitions
+        const elapsed = Date.now() - this.stateStartTime;
+        if (elapsed > this.stateDurations[this.currentState]) {
+            this.stateStartTime = Date.now();
+            
+            switch(this.currentState) {
+                case 'TIME_DISPLAY': 
+                    this.currentState = 'PRE_TRANSITION';
+                    break;
+                    
+                case 'PRE_TRANSITION': 
+                    this.currentState = 'INTERMEDIATE_FORM';
+                    this.currentPatternIndex = (this.currentPatternIndex + 1) % this.patterns.length;
+                    break;
+                    
+                case 'INTERMEDIATE_FORM': 
+                    this.currentState = 'TIME_DISPLAY';
+                    break;
+            }
+        }
+    }
+
+    renderTime(hourAngle, minuteAngle) {
+        this.clocks.forEach(clock => {
+            clock.displayPattern(hourAngle, minuteAngle);
+        });
+    }
+
+    renderPattern(pattern, hourAngle, minuteAngle) {
+        this.clocks.forEach(clock => {
+            const hourPatternAngle = this.calculateAngle(pattern.angles.hour, {time: Date.now()});
+            const minutePatternAngle = this.calculateAngle(pattern.angles.minute, {time: Date.now()});
+            clock.displayPattern(hourPatternAngle, minutePatternAngle);
+        });
     }
 }
 
@@ -87,10 +313,48 @@ class AnalogClock {
         this.ctx.stroke();
     }
 
+    displayPattern(hourAngle, minuteAngle) {
+        // Clear and draw clock face
+        this.ctx.clearRect(0, 0, this.size, this.size);
+        this.ctx.beginPath();
+        this.ctx.arc(this.size/2, this.size/2, this.size/2 - 2, 0, Math.PI * 2);
+        this.ctx.strokeStyle = '#222';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+        
+        // Convert angles to proper format (radians, 0 at top)
+        const hourRad = (hourAngle * Math.PI / 180) - (Math.PI / 2);
+        const minuteRad = (minuteAngle * Math.PI / 180) - (Math.PI / 2);
+        
+        // Draw hands
+        this.drawHand(hourRad, this.size * 0.3, 4, '#fff');
+        this.drawHand(minuteRad, this.size * 0.4, 3, '#fff');
+    }
+
     update() {
         this.drawClock();
     }
 }
 
 // Initialize the application
-new ClockGrid();
+console.log('Starting application initialization');
+
+if (window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1')) {
+    // Load patterns from public directory
+    // fetch('/design/patterns.json')
+    //     .then(response => {
+    //         console.log('Patterns fetch response:', response.status);
+    //         if (!response.ok) throw new Error('Patterns load failed');
+    //         return response.json();
+    //     })
+    //     .then(patterns => {
+    //         console.log('Patterns successfully loaded:', patterns);
+    //         new ClockGrid();
+    //     })
+    //     .catch(error => {
+    //         console.warn('Pattern load error, using fallback:', error);
+    //         new ClockGrid();
+    //     });
+} else {
+    new ClockGrid();
+}
