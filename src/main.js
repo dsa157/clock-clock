@@ -1,19 +1,30 @@
+import { Clock } from './clock.js';
 import patterns from './patterns.json';
 
-console.log('[DEBUG] Main script loaded');
-
+// Create grid of clocks with pattern support
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[DEBUG] DOM fully loaded');
+  const gridContainer = document.createElement('div');
+  gridContainer.id = 'clock-grid';
+  gridContainer.style.display = 'grid';
+  gridContainer.style.gridTemplateColumns = 'repeat(15, 1fr)';
+  gridContainer.style.gap = '10px';
+  gridContainer.style.padding = '20px';
+  
+  // Create 15x8 grid (120 clocks)
+  for (let i = 0; i < 120; i++) {
+    const clockWrapper = document.createElement('div');
+    clockWrapper.style.display = 'flex';
+    clockWrapper.style.justifyContent = 'center';
     
-    const clockGrid = new ClockGrid('clock-grid');
-    console.log('[DEBUG] ClockGrid instance created');
-    
-    if (clockGrid.gridElement) {
-        console.log('[DEBUG] Container element found, starting animation');
-        clockGrid.startAnimation();
-    } else {
-        console.error('[DEBUG] Failed to find container element');
-    }
+    const clock = new Clock(60); // Smaller size for denser grid
+    clockWrapper.appendChild(clock.canvas);
+    gridContainer.appendChild(clockWrapper);
+  }
+  
+  document.body.insertBefore(gridContainer, document.body.firstChild);
+  
+  // TODO: Implement pattern display logic
+  console.log('15x8 Clock grid ready. Patterns:', patterns);
 });
 
 // Main clock controller
@@ -356,5 +367,5 @@ if (window.location.href.includes('localhost') || window.location.href.includes(
     //         new ClockGrid();
     //     });
 } else {
-    new ClockGrid();
+    new ClockGrid('clock-grid');
 }

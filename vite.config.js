@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
 export default defineConfig({
-  base: '/',
+  base: '/src/',
   root: resolve(__dirname, 'src'),
   server: {
     port: 5173,
@@ -17,8 +17,8 @@ export default defineConfig({
     },
     proxy: {
       '/test': {
-        target: 'http://localhost:5173/src/test.html',
-        rewrite: path => path.replace(/^\/test/, '')
+        target: 'http://localhost:5173',
+        rewrite: path => path.replace(/^\/test/, '/src/test.html')
       }
     },
     open: '/src/index.html' // Default page to open
