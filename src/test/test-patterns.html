@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clock Pattern Tests</title>
+  <link rel="stylesheet" href="../styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="main-container">
+    <div class="controls">
+      <h1 id="pattern-title">Clock Pattern Tests</h1>
+      <div class="input-container">
+        <select id="pattern-select">
+          <!-- Options populated from patterns.json -->
+        </select>
+      </div>
+    </div>
+    <div id="clock-grid" class="grid"></div>
+  </div>
+
+  <script type="module">
+    import { Clock } from '../clock.js';
+    import patterns from '../patterns.json';
+
+    const grid = document.getElementById('clock-grid');
+    const select = document.getElementById('pattern-select');
+    const title = document.getElementById('pattern-title');
+
+    console.debug('[ClockPatterns] Initializing with', patterns.length, 'patterns');
+
+    // Populate dropdown
+    patterns.forEach((pattern, index) => {
+      console.debug('[ClockPatterns] Adding pattern:', index, pattern.name);
+      const option = document.createElement('option');
+      option.value = index;
+      option.textContent = pattern.name;
+      select.appendChild(option);
+    });
+
+    function renderPattern(patternId) {
+      console.debug('[ClockPatterns] Rendering pattern:', patternId);
+      grid.innerHTML = '';
+      const pattern = patterns[patternId];
+      title.textContent = `Pattern: ${pattern.name}`;
+      
+      // Create grid - simply render each clock position as defined
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 15; x++) {
+          const timeStr = pattern.grid[y][x];
+          
+          const cell = document.createElement('div');
+          cell.className = 'clock-face';
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = 60;
+          canvas.height = 60;
+          cell.appendChild(canvas);
+          
+          if (timeStr) {
+            console.debug('[ClockPatterns] Creating clock at', x, y, 'with position:', timeStr);
+            // Create clock in static mode
+            new Clock(canvas, x, y, timeStr, true);
+          }
+          
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    // Initial render
+    renderPattern(0);
+    
+    // Add event listener
+    select.addEventListener('change', (e) => {
+      console.debug('[ClockPatterns] Changed to pattern:', e.target.value);
+      renderPattern(e.target.value);
+    });
+  </script>
+</body>
+</html>

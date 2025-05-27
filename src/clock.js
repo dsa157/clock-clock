@@ -1,30 +1,31 @@
 import digits from './digits.json';
 
+const DIGITS = digits;
+
 export class Clock {
-  constructor(canvas, gridX, gridY, currentDigit) {
+  constructor(canvas, gridX, gridY, currentDigit, isStatic = false) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d'); // Initialize context immediately
+    this.ctx = canvas.getContext('2d'); 
     this.gridX = gridX;
     this.gridY = gridY;
-    this.currentDigit = currentDigit; // Ensure this is set
-    this.mode = 'time';
+    this.currentDigit = currentDigit; 
+    this.mode = isStatic ? 'static' : 'time';
     this.startTime = Date.now();
     this.hasLogged = false;
     
     // Initial render
     this.update();
     
-    // Start animation after 10s
-    setTimeout(() => {
-      this.mode = 'animate';
-      this.startTime = Date.now();
-    }, 10000);
-    
-    this.startAnimation();
+    if (!isStatic) {
+      setTimeout(() => {
+        this.mode = 'animate';
+        this.startTime = Date.now();
+      }, 10000);
+      this.startAnimation();
+    }
   }
 
   getCurrentTimePosition() {
-    // Return null for null inputs or edge positions
     if (this.gridX === null || this.gridY === null || 
         this.gridY < 0 || this.gridY >= 6) {
       return null;
@@ -63,6 +64,8 @@ export class Clock {
         console.debug(`Empty clock at (${this.gridX},${this.gridY})`);
         this.hasLogged = true;
       }
+      
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       return;
     }
     
@@ -76,44 +79,51 @@ export class Clock {
   }
 
   drawClock(hourAngle, minuteAngle) {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+    const radius = Math.min(centerX, centerY) * 0.9;
+  
+    // Get computed CSS variables
+    const rootStyles = getComputedStyle(document.documentElement);
+    const hourThickness = parseFloat(rootStyles.getPropertyValue('--hour-hand-thickness'));
+    const minuteThickness = parseFloat(rootStyles.getPropertyValue('--minute-hand-thickness'));
+    const hourLength = parseFloat(rootStyles.getPropertyValue('--hour-hand-length'));
+    const minuteLength = parseFloat(rootStyles.getPropertyValue('--minute-hand-length'));
+
     // Clear canvas
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  
     // Draw clock face
     this.ctx.beginPath();
-    this.ctx.arc(
-      this.ctx.canvas.width/2, 
-      this.ctx.canvas.height/2, 
-      Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 - 2, 
-      0, 
-      Math.PI * 2
-    );
-    this.ctx.fillStyle = '#111111';
+    this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    this.ctx.fillStyle = '#111';
     this.ctx.fill();
     this.ctx.strokeStyle = '#333';
     this.ctx.lineWidth = 1;
     this.ctx.stroke();
 
-    // Only draw hands if angles are provided
-    if (hourAngle !== null && minuteAngle !== null) {
-      this.drawHand(hourAngle, 0.3, 4);   // Hour hand
-      this.drawHand(minuteAngle, 0.45, 2); // Minute hand
-    }
-  }
-
-  drawHand(angle, length, width) {
-    angle = (angle - 90) * Math.PI / 180;
-    const centerX = this.ctx.canvas.width/2;
-    const centerY = this.ctx.canvas.height/2;
-    
+    // Draw hour hand
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, centerY);
     this.ctx.lineTo(
-      centerX + length * Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 * Math.cos(angle),
-      centerY + length * Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 * Math.sin(angle)
+      centerX + Math.sin(hourAngle * Math.PI / 180) * radius * hourLength,
+      centerY - Math.cos(hourAngle * Math.PI / 180) * radius * hourLength
     );
     this.ctx.strokeStyle = '#fff';
-    this.ctx.lineWidth = width;
+    this.ctx.lineWidth = hourThickness;
+    this.ctx.lineCap = 'butt';
+    this.ctx.stroke();
+  
+    // Draw minute hand
+    this.ctx.beginPath();
+    this.ctx.moveTo(centerX, centerY);
+    this.ctx.lineTo(
+      centerX + Math.sin(minuteAngle * Math.PI / 180) * radius * minuteLength,
+      centerY - Math.cos(minuteAngle * Math.PI / 180) * radius * minuteLength
+    );
+    this.ctx.strokeStyle = '#fff';
+    this.ctx.lineWidth = minuteThickness;
+    this.ctx.lineCap = 'butt';
     this.ctx.stroke();
   }
 

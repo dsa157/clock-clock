@@ -73,6 +73,34 @@ Columns	Hands align vertically down the grid in cascading rows
 Blank Tilt	All clocks tilt hands at same diagonal, e.g., 45°/225° angles
 Digital Grid Ghost	A faded preview outline of the digits appears ahead of time
 
+## Clock Hand Position Patterns
+
+### Basic Directions
+- `3:30` - Upper left corner (45°)
+- `9:30` - Upper right corner (135°)
+- `3:00` - Lower left corner (90°)
+- `9:00` - Lower right corner (270°)
+- `12:30` - Long vertical (0°)
+- `12:00` - Top short vertical (0°)
+- `6:30` - Bottom short vertical (180°)
+- `9:15` - Long horizontal (270°)
+- `3:15` - Right short horizontal (90°)
+- `9:45` - Left short horizontal (270°)
+
+### Diagonal Patterns
+- `10:20` - Diagonal top-left to bottom-right
+- `8:10` - Diagonal top-right to bottom-left
+- `1:40` - Shallow top-left diagonal
+- `11:25` - Shallow top-right diagonal
+
+### Special Patterns
+- `6:00` - Straight down (180°)
+- `12:00` - Straight up (0°)
+- `4:30` - Mid-left diagonal
+- `7:30` - Mid-right diagonal
+
+These patterns can be combined in the 15x9 grid to create visual effects and animations.
+
 Look & Feel
 1. Digit Composition
 * Each large digit (0–9) is composed of a grid of miniature analog clocks.
@@ -120,4 +148,3 @@ Animate via:
 * GPU-accelerated rendering is strongly recommended (Canvas/WebGL/SpriteKit).
 * Batch updates to minimize draw calls when possible.
 * Frame rate target: 60fps on most devices.
-

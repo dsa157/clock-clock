@@ -6,25 +6,19 @@ body {
     font-family: sans-serif;
 }
 
+
 /* Perfect 15x8 Grid Fit */
 #clock-grid {
     display: grid;
     grid-template-columns: repeat(15, minmax(0, 1fr));
-    grid-template-rows: repeat(8, minmax(0, 1fr));
-    gap: 2px;
+    grid-template-rows: repeat(8, 1fr);
+    row-gap: 2px;
+    column-gap: 2px;
     width: 100vw;
     height: 100vh;
     box-sizing: border-box;
-    padding: 2px;
-}
-
-.clock-face {
-    position: relative;
-    aspect-ratio: 1;
-    border-radius: 50%;
+    padding: 0;
     overflow: hidden;
-    background: #111111;
-    border: 1px solid #333;
 }
 
 canvas {
@@ -66,4 +60,43 @@ input, button {
     border: 1px solid #444;
     padding: 8px 12px;
     margin-right: 8px;
+}
+
+/* Clock Face Styles */
+
+:root {
+    --hour-hand-thickness: 6px;
+    --minute-hand-thickness: 6px;
+    --hour-hand-length: 0.6;   /* Percentage of radius */
+    --minute-hand-length: 0.8; /* Percentage of radius */
+  }
+
+  .clock-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: visible;
+    background: #111;
+    border: 1px solid #333;
+    fill: #111;
+    stroke: #111;
+    stroke-width: 1px;
+    z-index: 1;
+}
+
+/* Clock Hand Styles */
+.clock-hour-hand {
+  stroke: #fff;
+  stroke-width: var(--hour-hand-thickness);
+  stroke-linecap: butt;
+  z-index: 2;
+}
+
+.clock-minute-hand {
+  stroke: #fff;
+  stroke-width: var(--minute-hand-thickness);
+  stroke-linecap: butt;
+  z-index: 2;
 }

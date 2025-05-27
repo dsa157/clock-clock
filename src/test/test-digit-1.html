@@ -1,35 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Digit 1 Test</title>
   <link rel="stylesheet" href="../styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <h1>Digit 1 Test Grid</h1>
+  <h1>Digit 1 Test</h1>
   <div id="clock-grid" class="grid"></div>
 
   <script type="module">
     import { Clock } from '../clock.js';
-    import digits from '../digits.json';
-
-    function createDigitTest() {
-      const grid = document.getElementById('clock-grid');
-      
-      // Create 3x6 grid for digit 1
-      for (let y = 0; y < 6; y++) {
-        for (let x = 0; x < 3; x++) {
-          const canvas = document.createElement('canvas');
-          canvas.width = 60;
-          canvas.height = 60;
-          grid.appendChild(canvas);
-          
-          new Clock(canvas, x, y, '1');
-        }
+    
+    const grid = document.getElementById('clock-grid');
+    
+    // Create 3x6 grid for digit 1
+    for (let y = 0; y < 6; y++) {
+      for (let x = 0; x < 3; x++) {
+        const cell = document.createElement('div');
+        cell.className = 'clock-face';
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = 60;
+        canvas.height = 60;
+        cell.appendChild(canvas);
+        
+        // Only middle column (x=1) should show clock faces
+        // Left and right columns should be empty
+        const timeStr = (x === 1) ? 
+          (y === 0 ? '3:30' : 
+           y === 5 ? '3:00' : '12:30') : 
+          null;
+        
+        new Clock({
+          canvas: canvas,
+          gridX: x,
+          gridY: y,
+          time: timeStr,
+          currentDigit: '1'
+        });
+        
+        grid.appendChild(cell);
       }
     }
-
-    createDigitTest();
   </script>
 </body>
 </html>

@@ -10,6 +10,8 @@ const DIGIT_POSITIONS = [
   {startX: 11, startY: 1}  // Fourth digit (MM)
 ];
 
+const DIGITS = digits;
+
 function updateTimeDisplay() {
   const now = new Date();
   const timeDigits = now.getHours().toString().padStart(2, '0') + 
@@ -28,13 +30,21 @@ function updateTimeDisplay() {
         const digitX = x - pos.startX;
         const digitY = y - pos.startY;
         
+        // Get time string directly from digits.json
+        const timeStr = DIGITS[digit]?.[digitY]?.[digitX] || null;
+        
         canvas.__clock.currentDigit = digit;
         canvas.__clock.gridX = digitX;
         canvas.__clock.gridY = digitY;
+        canvas.__clock.time = timeStr;
         canvas.__clock.update();
         return;
       }
     }
+    
+    // For non-digit positions
+    canvas.__clock.time = null;
+    canvas.__clock.update();
   });
 }
 
