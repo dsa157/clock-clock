@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Digits Test</title>
+  <style>
+    body { background: black; color: white; font-family: sans-serif; padding: 20px; }
+    .digit-container { margin-bottom: 40px; }
+    .digit-title { margin: 10px 0; }
+    .grid { 
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-gap: 10px;
+      margin: 10px 0;
+    }
+    canvas { display: block; margin: 0; }
+  </style>
+</head>
+<body>
+  <h1>All Digits Test</h1>
+  <div id="digits-container"></div>
+
+  <script type="module">
+    import { Clock } from '../clock.js';
+    import digits from '../digits.json';
+
+    function createAllDigitsTest() {
+      const container = document.getElementById('digits-container');
+      
+      // Test digits 0-9
+      for (let digit = 0; digit < 10; digit++) {
+        const digitDiv = document.createElement('div');
+        digitDiv.className = 'digit-container';
+        
+        const title = document.createElement('h2');
+        title.className = 'digit-title';
+        title.textContent = `Digit ${digit}`;
+        digitDiv.appendChild(title);
+        
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+        
+        // Create 3x6 grid for current digit
+        for (let y = 0; y < 6; y++) {
+          for (let x = 0; x < 3; x++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 60;
+            canvas.height = 60;
+            grid.appendChild(canvas);
+            
+            new Clock(canvas, x, y, digit.toString());
+          }
+        }
+        
+        digitDiv.appendChild(grid);
+        container.appendChild(digitDiv);
+      }
+    }
+
+    createAllDigitsTest();
+  </script>
+</body>
+</html>

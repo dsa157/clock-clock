@@ -10,7 +10,8 @@
   - Fixed red hand at 3pm (90°)
   - Rotating green hand (360°/minute)
   - Debug information display
-- 15×8 clock grid implementation (120 clocks)
+- 10-second time display phase before animations
+- Synchronized transition timing across all clocks
 
 ### Changed
 - Updated Vite CSP configuration to allow inline scripts

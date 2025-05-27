@@ -1,7 +1,7 @@
 import { Clock } from './clock.js';
 import patterns from './patterns.json';
 
-// Create grid of clocks with pattern support
+// Create grid of clocks
 document.addEventListener('DOMContentLoaded', () => {
   const gridContainer = document.createElement('div');
   gridContainer.id = 'clock-grid';
@@ -11,20 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
   gridContainer.style.padding = '20px';
   
   // Create 15x8 grid (120 clocks)
-  for (let i = 0; i < 120; i++) {
-    const clockWrapper = document.createElement('div');
-    clockWrapper.style.display = 'flex';
-    clockWrapper.style.justifyContent = 'center';
-    
-    const clock = new Clock(60); // Smaller size for denser grid
-    clockWrapper.appendChild(clock.canvas);
-    gridContainer.appendChild(clockWrapper);
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 15; x++) {
+      const clockWrapper = document.createElement('div');
+      clockWrapper.style.display = 'flex';
+      clockWrapper.style.justifyContent = 'center';
+      
+      const clock = new Clock(60, x, y);
+      clockWrapper.appendChild(clock.canvas);
+      gridContainer.appendChild(clockWrapper);
+      
+      // Immediately update to show current time
+      clock.update();
+    }
   }
   
   document.body.insertBefore(gridContainer, document.body.firstChild);
-  
-  // TODO: Implement pattern display logic
-  console.log('15x8 Clock grid ready. Patterns:', patterns);
+  console.log('Clock grid ready - showing current time for 10 seconds');
 });
 
 // Main clock controller
