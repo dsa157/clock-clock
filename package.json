@@ -1,0 +1,13 @@
+{
+  "name": "clock-clock",
+  "version": "1.0.0",
+  "description": "A grid of analog clocks forming digital time",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

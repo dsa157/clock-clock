@@ -1,0 +1,75 @@
+{
+  "digits": {
+    "0": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ],
+    "1": [
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":90}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":90}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":90}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":90}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":90}, {"hour":-1,"minute":-1}]
+    ],
+    "2": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":-1,"minute":-1}, {"hour":270,"minute":90}, {"hour":90,"minute":270}],
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ],
+    "3": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":90,"minute":270}],
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":90,"minute":270}],
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}]
+    ],
+    "4": [
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}],
+      [{"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}]
+    ],
+    "5": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}],
+      [{"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ],
+    "6": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ],
+    "7": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":-1,"minute":-1}],
+      [{"hour":-1,"minute":-1}, {"hour":90,"minute":270}, {"hour":-1,"minute":-1}]
+    ],
+    "8": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ],
+    "9": [
+      [{"hour":0,"minute":180}, {"hour":0,"minute":180}, {"hour":0,"minute":180}],
+      [{"hour":270,"minute":90}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}],
+      [{"hour":-1,"minute":-1}, {"hour":-1,"minute":-1}, {"hour":90,"minute":270}],
+      [{"hour":180,"minute":0}, {"hour":180,"minute":0}, {"hour":180,"minute":0}]
+    ]
+  }
+}
+

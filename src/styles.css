@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #111;
+}
+
+#clock-grid {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    height: calc(100vh - 10px);
+    width: calc(100vw - 10px);
+    margin: 5px;
+    gap: 5px;
+}
+
+.clock-face {
+    position: relative;
+    margin: 5px;
+}
