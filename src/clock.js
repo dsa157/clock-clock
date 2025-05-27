@@ -76,32 +76,40 @@ export class Clock {
 
   drawClock(hourAngle, minuteAngle) {
     // Clear canvas
-    this.ctx.clearRect(0, 0, 60, 60);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     
     // Draw clock face
     this.ctx.beginPath();
-    this.ctx.arc(30, 30, 29, 0, Math.PI * 2);
-    this.ctx.strokeStyle = '#fff';
+    this.ctx.arc(
+      this.ctx.canvas.width/2, 
+      this.ctx.canvas.height/2, 
+      Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 - 2, 
+      0, 
+      Math.PI * 2
+    );
+    this.ctx.fillStyle = '#111111';
+    this.ctx.fill();
+    this.ctx.strokeStyle = '#333';
     this.ctx.lineWidth = 1;
     this.ctx.stroke();
-    
-    // Draw hour hand
-    this.drawHand(hourAngle, 18, 3);
-    
-    // Draw minute hand
-    this.drawHand(minuteAngle, 27, 2);
+
+    // Only draw hands if angles are provided
+    if (hourAngle !== null && minuteAngle !== null) {
+      this.drawHand(hourAngle, 0.3, 4);   // Hour hand
+      this.drawHand(minuteAngle, 0.45, 2); // Minute hand
+    }
   }
 
   drawHand(angle, length, width) {
     angle = (angle - 90) * Math.PI / 180;
-    const centerX = 30;
-    const centerY = 30;
+    const centerX = this.ctx.canvas.width/2;
+    const centerY = this.ctx.canvas.height/2;
     
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, centerY);
     this.ctx.lineTo(
-      centerX + length * Math.cos(angle),
-      centerY + length * Math.sin(angle)
+      centerX + length * Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 * Math.cos(angle),
+      centerY + length * Math.min(this.ctx.canvas.width, this.ctx.canvas.height)/2 * Math.sin(angle)
     );
     this.ctx.strokeStyle = '#fff';
     this.ctx.lineWidth = width;

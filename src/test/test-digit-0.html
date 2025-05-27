@@ -2,20 +2,13 @@
 <html>
 <head>
   <title>Digit 0 Test</title>
-  <style>
-    body { background: black; color: white; font-family: sans-serif; padding: 20px; }
-    .grid { 
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      grid-gap: 10px;
-      margin: 20px 0;
-    }
-    canvas { display: block; margin: 0; }
-  </style>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-  <h1>Digit 0 Test</h1>
-  <div id="clock-grid" class="grid"></div>
+  <div style="padding: 20px;">
+    <h1>Digit 0 Test</h1>
+    <div id="clock-grid" style="display: grid; grid-template-columns: repeat(3, 60px); gap: 10px;"></div>
+  </div>
 
   <script type="module">
     import { Clock } from '../clock.js';

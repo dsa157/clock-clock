@@ -2,22 +2,16 @@
 <html>
 <head>
   <title>All Digits Test</title>
+  <link rel="stylesheet" href="../styles.css">
   <style>
-    body { background: black; color: white; font-family: sans-serif; padding: 20px; }
-    .digit-container { margin-bottom: 40px; }
-    .digit-title { margin: 10px 0; }
-    .grid { 
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      grid-gap: 10px;
-      margin: 10px 0;
-    }
-    canvas { display: block; margin: 0; }
+    body { background: black; color: white; font-family: sans-serif; }
   </style>
 </head>
 <body>
-  <h1>All Digits Test</h1>
-  <div id="digits-container"></div>
+  <div style="padding: 20px;">
+    <h1>All Digits Test</h1>
+    <div id="digits-container"></div>
+  </div>
 
   <script type="module">
     import { Clock } from '../clock.js';

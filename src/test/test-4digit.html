@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>4-Digit Clock Display</title>
+  <link rel="stylesheet" href="../styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="controls">
+    <h1 id="display-title">4-Digit Display: 5678</h1>
+    <div class="input-container">
+      <input type="text" id="digit-input" maxlength="4" placeholder="Enter 4 digits">
+      <button id="update-btn">Update</button>
+    </div>
+  </div>
+  <div id="clock-grid" class="grid"></div>
+
+  <script type="module">
+    import { Clock } from '../clock.js';
+    
+    // Get digits from URL or use default
+    const urlParams = new URLSearchParams(window.location.search);
+    let displayDigits = urlParams.get('digits') || '5678';
+    
+    // Validate digits (only 0-9 allowed)
+    displayDigits = displayDigits.replace(/[^0-9]/g, '').slice(0, 4);
+    if (displayDigits.length < 4) displayDigits = '5678';
+    
+    // Digit positions: digit 1 (col 1), digit 2 (col 4), digit 3 (col 8), digit 4 (col 11)
+    const digitPositions = [
+      {digit: 0, startX: 1, startY: 1},  // Digit 1 (5)
+      {digit: 1, startX: 4, startY: 1},  // Digit 2 (6)
+      {digit: 2, startX: 8, startY: 1},  // Digit 3 (7)
+      {digit: 3, startX: 11, startY: 1}  // Digit 4 (8)
+    ];
+
+    function create4DigitDisplay(digits) {
+      const grid = document.getElementById('clock-grid');
+      grid.innerHTML = '';
+      
+      // Update title
+      document.getElementById('display-title').textContent = `4-Digit Display: ${digits}`;
+      
+      // Create 15x8 grid
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 15; x++) {
+          const cell = document.createElement('div');
+          cell.className = 'clock-face';
+          
+          // Find which digit this position belongs to
+          let currentDigit = null;
+          let currentPos = null;
+          for (const pos of digitPositions) {
+            if (x >= pos.startX && x < pos.startX + 3 && 
+                y >= pos.startY && y < pos.startY + 6) {
+              currentDigit = digits[pos.digit];
+              currentPos = pos;
+              break;
+            }
+          }
+          
+          if (currentDigit !== null && currentPos !== null) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 60;
+            canvas.height = 60;
+            cell.appendChild(canvas);
+            
+            // Calculate position within digit (0-2, 0-5)
+            const digitX = x - currentPos.startX;
+            const digitY = y - currentPos.startY;
+            
+            new Clock(canvas, digitX, digitY, currentDigit);
+          }
+          
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    // Initialize with current digits
+    create4DigitDisplay(displayDigits);
+    
+    // Add input handler
+    document.getElementById('update-btn').addEventListener('click', () => {
+      const newDigits = document.getElementById('digit-input').value;
+      if (newDigits.length === 4) {
+        window.history.pushState({}, '', `?digits=${newDigits}`);
+        create4DigitDisplay(newDigits);
+      }
+    });
+  </script>
+</body>
+</html>

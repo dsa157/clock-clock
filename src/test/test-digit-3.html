@@ -2,24 +2,13 @@
 <html>
 <head>
   <title>Digit 3 Test</title>
-  <style>
-    body {
-      background: black;
-      color: white;
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-gap: 10px;
-      margin: 20px 0;
-    }
-  </style>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-  <h1>Digit 3 Test</h1>
-  <div id="clock-grid" class="grid"></div>
+  <div style="padding: 20px;">
+    <h1>Digit 3 Test</h1>
+    <div id="clock-grid" style="display: grid; grid-template-columns: repeat(3, 60px); gap: 10px;"></div>
+  </div>
 
   <script type="module">
     import { Clock } from '../clock.js';
@@ -32,8 +21,8 @@
       for (let y = 0; y < 6; y++) {
         for (let x = 0; x < 3; x++) {
           const canvas = document.createElement('canvas');
-          canvas.width = 100;
-          canvas.height = 100;
+          canvas.width = 60;
+          canvas.height = 60;
           grid.appendChild(canvas);
           
           new Clock(canvas, x, y, '3');
