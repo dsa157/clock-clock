@@ -1,8 +1,24 @@
+import digits from './digits.json';
+
 // Clock class implementation
 export class Clock {
-  constructor(size = 200) {
+  constructor(size = 60, gridX, gridY) {
     this.size = size;
+    this.gridX = gridX;
+    this.gridY = gridY;
     this.canvas = this.createCanvas();
+    this.mode = 'time';
+    this.startTime = Date.now();
+    
+    // Initial render
+    this.update();
+    
+    // Start animation after 10s
+    setTimeout(() => {
+      this.mode = 'animate';
+      this.startTime = Date.now();
+    }, 10000);
+    
     this.startAnimation();
   }
 
@@ -12,13 +28,46 @@ export class Clock {
     this.canvas.height = this.size;
     this.canvas.style.display = 'block';
     this.canvas.style.margin = '20px auto';
-    this.canvas.style.border = '2px solid white';
+    this.canvas.style.border = 'none'; // Removed border
     
     const debugInfo = document.querySelector('.debug-info');
     document.body.insertBefore(this.canvas, debugInfo);
     
     this.ctx = this.canvas.getContext('2d');
     return this.canvas;
+  }
+
+  timeToAngle(timeStr) {
+    if (!timeStr) return null;
+    
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    
+    // Calculate hour hand position (30° per hour + 0.5° per minute)
+    const hourAngle = (hours % 12) * 30 + minutes * 0.5;
+    
+    // Calculate minute hand position (6° per minute)
+    const minuteAngle = minutes * 6;
+    
+    // Return both angles in radians
+    return {
+      hour: hourAngle * (Math.PI/180),
+      minute: minuteAngle * (Math.PI/180)
+    };
+  }
+
+  getCurrentTimePosition() {
+    // Only show in columns 1-3 and rows 1-6 (0-indexed)
+    if (this.gridX < 1 || this.gridX > 3 || this.gridY < 1 || this.gridY > 6) {
+      return null;
+    }
+    
+    // Get time string for current position
+    const segmentY = this.gridY - 1;
+    const segmentX = this.gridX - 1;
+    const timeStr = digits.hour?.["0"]?.[segmentY]?.[segmentX];
+    
+    // Convert time string to angles
+    return this.timeToAngle(timeStr);
   }
 
   drawHand(angle, length, width, color) {
@@ -51,16 +100,29 @@ export class Clock {
     // Draw clock face
     this.ctx.beginPath();
     this.ctx.arc(this.size/2, this.size/2, this.size/2 - 10, 0, Math.PI * 2);
-    this.ctx.strokeStyle = '#fff';
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
+    this.ctx.fillStyle = '#222222';
+    this.ctx.fill();
     
-    // Fixed red hand at 3pm (90 degrees)
-    this.drawHand(Math.PI/2, this.size * 0.4, 6, '#f00');
+    // Draw clock center
+    this.ctx.beginPath();
+    this.ctx.arc(this.size/2, this.size/2, 3, 0, Math.PI*2);
+    this.ctx.fillStyle = '#fff';
+    this.ctx.fill();
     
-    // Rotating green hand (360 degrees per minute)
-    const now = new Date();
-    const rotation = (now.getSeconds() + now.getMilliseconds()/1000) * 6 * (Math.PI/180);
-    this.drawHand(rotation, this.size * 0.5, 4, '#0f0');
+    const now = Date.now();
+    
+    if (this.mode === 'time') {
+      const angles = this.getCurrentTimePosition();
+      if (angles) {
+        this.drawHand(angles.minute, this.size * 0.5, 4, '#0f0');
+        this.drawHand(angles.hour, this.size * 0.35, 6, '#0f0');
+      }
+    } else {
+      const elapsed = (now - this.startTime) / 1000;
+      const rotation = elapsed * 6 * (Math.PI/180);
+      
+      this.drawHand(rotation, this.size * 0.5, 4, '#0f0');
+      this.drawHand(rotation/12, this.size * 0.35, 6, '#0f0');
+    }
   }
 }

@@ -1,0 +1,214 @@
+{
+  "hour": {
+    "0": [
+      ["3:30", "9:15", "9:30"],
+      ["12:30", "6:30", "12:30"],
+      ["12:30", "12:30", "12:30"],
+      ["12:30", "12:30", "12:30"],
+      ["12:30", "12:00", "12:30"],
+      ["3:00", "9:15", "11:45"]
+    ],
+    "1": [
+      [null, {"angle": 90}, null],
+      [null, {"angle": 90}, null],
+      [null, {"angle": 90}, null],
+      [null, {"angle": 90}, null],
+      [null, {"angle": 90}, null],
+      [null, {"angle": 90}, null]
+    ],
+    "2": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [null, {"angle": 270}, {"angle": 90}, null, null, null],
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [{"angle": 270}, null, null, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "3": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [null, {"angle": 90}, {"angle": 270}, null, null, null],
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [null, {"angle": 90}, {"angle": 270}, null, null, null],
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "4": [
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, {"angle": 90}, null, null],
+      [null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "5": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [{"angle": 270}, null, null, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, {"angle": 90}, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "6": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [{"angle": 270}, null, null, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "7": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [null, {"angle": 90}, null, null, null, null],
+      [null, {"angle": 90}, null, null, null, null],
+      [null, {"angle": 90}, null, null, null, null],
+      [null, {"angle": 90}, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "8": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ],
+    "9": [
+      [{"angle": 0}, {"angle": 0}, {"angle": 0}, null, null, null],
+      [{"angle": 270}, null, {"angle": 90}, null, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, {"angle": 90}, null, null],
+      [{"angle": 180}, {"angle": 180}, {"angle": 180}, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null],
+      [null, null, null, null, null, null]
+    ]
+  },
+  "minute": {
+    "0": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "1": [
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "2": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, null, {"angle": 270}, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, null, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "3": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, null, {"angle": 90}, {"angle": 270}, null],
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, null, {"angle": 90}, {"angle": 270}, null],
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "4": [
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, {"angle": 90}, null],
+      [null, null, null, null, null, null, {"angle": 90}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "5": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, null, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "6": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, null, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "7": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, {"angle": 90}, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "8": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ],
+    "9": [
+      [null, null, null, null, {"angle": 0}, {"angle": 0}, {"angle": 0}, null],
+      [null, null, null, null, {"angle": 270}, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, {"angle": 90}, null],
+      [null, null, null, null, {"angle": 180}, {"angle": 180}, {"angle": 180}, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ]
+  },
+  "colon": {
+    "default": [
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, {"angle": 90}, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, {"angle": 90}, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null]
+    ]
+  }
+}
