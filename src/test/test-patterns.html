@@ -4,6 +4,14 @@
   <title>Clock Pattern Tests</title>
   <link rel="stylesheet" href="../styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #clock-grid {
+      display: grid;
+      grid-template-columns: repeat(15, 60px);
+      grid-template-rows: repeat(8, 60px);
+      gap: 5px;
+    }
+  </style>
 </head>
 <body>
   <div class="main-container">
@@ -20,60 +28,97 @@
 
   <script type="module">
     import { Clock } from '../clock.js';
-    import patterns from '../patterns.json';
+    import patterns from '../patterns.json' assert { type: 'json' };
 
-    const grid = document.getElementById('clock-grid');
+    console.group('[ClockPatterns] Initializing Pattern Test');
+    console.debug('Loaded Clock module:', Clock?.name || 'undefined');
+    console.table({
+      'Pattern Count': patterns.length,
+      'Expected Grid Size': '15x8', 
+      'First Pattern': patterns[0]?.name || 'none'
+    });
+    
+    let grid = document.getElementById('clock-grid');
     const select = document.getElementById('pattern-select');
     const title = document.getElementById('pattern-title');
-
-    console.debug('[ClockPatterns] Initializing with', patterns.length, 'patterns');
-
-    // Populate dropdown
+    
+    console.debug('[ClockPatterns] DOM elements loaded:', 
+      { grid, select, title });
+    
+    console.debug('[ClockPatterns] Available patterns:');
     patterns.forEach((pattern, index) => {
-      console.debug('[ClockPatterns] Adding pattern:', index, pattern.name);
+      console.groupCollapsed(`Pattern ${index}: ${pattern.name}`);
+      console.debug('Description:', pattern.description);
+      console.debug('Dimensions:', `${pattern.grid[0].length}x${pattern.grid.length}`);
+      console.table(pattern.grid);
+      console.groupEnd();
+      
       const option = document.createElement('option');
       option.value = index;
       option.textContent = pattern.name;
       select.appendChild(option);
     });
+    
+    console.groupEnd();
 
-    function renderPattern(patternId) {
-      console.debug('[ClockPatterns] Rendering pattern:', patternId);
-      grid.innerHTML = '';
-      const pattern = patterns[patternId];
-      title.textContent = `Pattern: ${pattern.name}`;
+    function renderPattern(pattern) {
+      console.group(`[ClockPatterns] Rendering ${pattern.name}`);
+      console.debug('Grid dimensions:', `${pattern.grid[0].length}x${pattern.grid.length}`);
       
-      // Create grid - simply render each clock position as defined
+      // Clear existing clocks
+      while (grid.firstChild) {
+        grid.removeChild(grid.firstChild);
+      }
+      
+      // Create new grid container
+      const newGrid = document.createElement('div');
+      newGrid.id = 'clock-grid';
+      newGrid.className = 'grid';
+      
+      // Render each clock
       for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 15; x++) {
-          const timeStr = pattern.grid[y][x];
+          const time = pattern.grid[y][x];
+          console.debug(`[Cell ${x},${y}]`, {
+            time,
+            exists: time !== null && time !== undefined
+          });
           
           const cell = document.createElement('div');
-          cell.className = 'clock-face';
+          cell.className = 'clock-cell';
           
           const canvas = document.createElement('canvas');
           canvas.width = 60;
           canvas.height = 60;
+          new Clock(canvas, pattern.grid[y][x]);
+          
           cell.appendChild(canvas);
-          
-          if (timeStr) {
-            console.debug('[ClockPatterns] Creating clock at', x, y, 'with position:', timeStr);
-            // Create clock in static mode
-            new Clock(canvas, x, y, timeStr, true);
-          }
-          
-          grid.appendChild(cell);
+          newGrid.appendChild(cell);
         }
       }
+      
+      // Replace grid
+      grid.replaceWith(newGrid);
+      grid = newGrid;
+      console.groupEnd();
     }
 
     // Initial render
-    renderPattern(0);
+    console.debug('[ClockPatterns] Initializing with first pattern:', patterns[0].name);
+    title.textContent = `Pattern: ${patterns[0].name}`;
+    renderPattern(patterns[0]);
     
     // Add event listener
     select.addEventListener('change', (e) => {
-      console.debug('[ClockPatterns] Changed to pattern:', e.target.value);
-      renderPattern(e.target.value);
+      const selectedPattern = patterns[e.target.value];
+      console.group(`[ClockPatterns] Pattern Change to ${selectedPattern.name}`);
+      console.debug('Selection event:', e);
+      console.debug('Pattern index:', e.target.value);
+      
+      title.textContent = `Pattern: ${selectedPattern.name}`;
+      renderPattern(selectedPattern);
+      
+      console.groupEnd();
     });
   </script>
 </body>

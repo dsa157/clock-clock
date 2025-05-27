@@ -3,78 +3,33 @@ import digits from './digits.json';
 const DIGITS = digits;
 
 export class Clock {
-  constructor(canvas, gridX, gridY, currentDigit, isStatic = false) {
+  constructor(canvas, timeStr) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d'); 
-    this.gridX = gridX;
-    this.gridY = gridY;
-    this.currentDigit = currentDigit; 
-    this.mode = isStatic ? 'static' : 'time';
-    this.startTime = Date.now();
-    this.hasLogged = false;
-    
-    // Initial render
-    this.update();
-    
-    if (!isStatic) {
-      setTimeout(() => {
-        this.mode = 'animate';
-        this.startTime = Date.now();
-      }, 10000);
-      this.startAnimation();
-    }
-  }
-
-  getCurrentTimePosition() {
-    if (this.gridX === null || this.gridY === null || 
-        this.gridY < 0 || this.gridY >= 6) {
-      return null;
-    }
-    
-    if (!this.currentDigit || !digits[this.currentDigit] || 
-        !digits[this.currentDigit][this.gridY] || 
-        !digits[this.currentDigit][this.gridY][this.gridX]) {
-      return null;
-    }
-    
-    return digits[this.currentDigit][this.gridY][this.gridX];
+    this.ctx = canvas.getContext('2d');
+    this.timeStr = timeStr;
+    if (timeStr !== null) this.update();
   }
 
   timeToAngle(timeStr) {
-    if (!timeStr || typeof timeStr !== 'string') {
-      return { hour: 0, minute: 0 };
-    }
-    
+    if (!timeStr) return { hour: 0, minute: 0 };
     try {
-      const [hours, minutes] = timeStr.split(':').map(Number);
+      const [h, m] = timeStr.split(':').map(Number);
       return {
-        hour: (hours % 12) * 30 + minutes * 0.5,
-        minute: minutes * 6
+        hour: (h % 12) * 30 + m * 0.5,
+        minute: m * 6
       };
     } catch {
       return { hour: 0, minute: 0 };
     }
   }
 
-  update() {
-    const timeStr = this.getCurrentTimePosition();
-    
-    if (!timeStr) {
-      if (!this.hasLogged) {
-        console.debug(`Empty clock at (${this.gridX},${this.gridY})`);
-        this.hasLogged = true;
-      }
-      
+  update(timeStr) {
+    if (timeStr === null) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       return;
     }
-    
-    if (!this.hasLogged) {
-      console.debug(`Rendering digit ${this.currentDigit} at (${this.gridX},${this.gridY}): Time=${timeStr}`);
-      this.hasLogged = true;
-    }
-    
-    const angles = this.timeToAngle(timeStr);
+    if (timeStr) this.timeStr = timeStr;
+    const angles = this.timeToAngle(this.timeStr);
     this.drawClock(angles.hour, angles.minute);
   }
 
@@ -82,17 +37,15 @@ export class Clock {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
     const radius = Math.min(centerX, centerY) * 0.9;
-  
-    // Get computed CSS variables
+
     const rootStyles = getComputedStyle(document.documentElement);
     const hourThickness = parseFloat(rootStyles.getPropertyValue('--hour-hand-thickness'));
     const minuteThickness = parseFloat(rootStyles.getPropertyValue('--minute-hand-thickness'));
     const hourLength = parseFloat(rootStyles.getPropertyValue('--hour-hand-length'));
     const minuteLength = parseFloat(rootStyles.getPropertyValue('--minute-hand-length'));
 
-    // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  
+    
     // Draw clock face
     this.ctx.beginPath();
     this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -102,36 +55,75 @@ export class Clock {
     this.ctx.lineWidth = 1;
     this.ctx.stroke();
 
-    // Draw hour hand
+    // Draw hands
+    this.drawHand(hourAngle, radius * hourLength, hourThickness);
+    this.drawHand(minuteAngle, radius * minuteLength, minuteThickness);
+  }
+
+  drawHand(angle, length, thickness) {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+    
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, centerY);
     this.ctx.lineTo(
-      centerX + Math.sin(hourAngle * Math.PI / 180) * radius * hourLength,
-      centerY - Math.cos(hourAngle * Math.PI / 180) * radius * hourLength
+      centerX + Math.sin(angle * Math.PI / 180) * length,
+      centerY - Math.cos(angle * Math.PI / 180) * length
     );
     this.ctx.strokeStyle = '#fff';
-    this.ctx.lineWidth = hourThickness;
-    this.ctx.lineCap = 'butt';
-    this.ctx.stroke();
-  
-    // Draw minute hand
-    this.ctx.beginPath();
-    this.ctx.moveTo(centerX, centerY);
-    this.ctx.lineTo(
-      centerX + Math.sin(minuteAngle * Math.PI / 180) * radius * minuteLength,
-      centerY - Math.cos(minuteAngle * Math.PI / 180) * radius * minuteLength
-    );
-    this.ctx.strokeStyle = '#fff';
-    this.ctx.lineWidth = minuteThickness;
+    this.ctx.lineWidth = thickness;
     this.ctx.lineCap = 'butt';
     this.ctx.stroke();
   }
+}
 
-  startAnimation() {
-    const animate = () => {
-      this.update();
-      requestAnimationFrame(animate);
-    };
-    animate();
+export class ClockGrid {
+  constructor(container, gridDef) {
+    this.container = container;
+    this.gridDef = gridDef;
+    this.clocks = [];
+    this.render();
+  }
+
+  render() {
+    console.log('ClockGrid.render() called');
+    console.log('Grid definition:', this.gridDef);
+    
+    this.container.innerHTML = '';
+    this.container.style.display = 'grid';
+    this.container.style.gridTemplateRows = `repeat(${this.gridDef.length}, 60px)`;
+    this.container.style.gridTemplateColumns = `repeat(${this.gridDef[0].length}, 60px)`;
+    this.container.style.gap = '5px';
+    
+    console.log('Grid container styles applied');
+    
+    this.clocks = [];
+    
+    for (let y = 0; y < this.gridDef.length; y++) {
+      for (let x = 0; x < this.gridDef[0].length; x++) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 60;
+        canvas.height = 60;
+        
+        const timeStr = this.gridDef[y][x];
+        console.log(`Creating clock at (${x},${y}) with time:`, timeStr);
+        
+        const clock = new Clock(canvas, timeStr);
+        this.clocks.push({ x, y, clock });
+        
+        this.container.appendChild(canvas);
+      }
+    }
+  }
+
+  update(gridDef) {
+    console.log('ClockGrid.update() called with:', gridDef);
+    if (gridDef) this.gridDef = gridDef;
+    
+    this.clocks.forEach(({x, y, clock}) => {
+      const timeStr = this.gridDef[y][x];
+      console.log(`Updating clock at (${x},${y}) with time:`, timeStr);
+      clock.update(timeStr);
+    });
   }
 }

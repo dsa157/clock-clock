@@ -1,12 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Clock Grid</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="main.js"></script>
+  <title>Clock Clock</title>
+  <link rel="stylesheet" href="/styles.css?v=${Date.now()}">
+  <style>
+    #clock-grid {
+      display: grid;
+      grid-template-columns: repeat(15, 60px);
+      grid-template-rows: repeat(8, 60px);
+      gap: 5px;
+    }
+  </style>
 </head>
 <body>
-  <!-- 15x8 clock grid will be inserted here by main.js -->
   <div id="clock-grid"></div>
+  <script type="module">
+    import { ClockGrid } from './clock.js';
+    import digitPatterns from './digits.json' assert { type: 'json' };
+    
+    // Initialize 15x8 null grid
+    const gridContainer = document.getElementById('clock-grid');
+    const timeGrid = new ClockGrid(gridContainer, Array(8).fill().map(() => Array(15).fill(null)));
+    
+    function updateTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = hours + minutes;
+      
+      // Create 15x8 null grid
+      const newGrid = Array(8).fill().map(() => Array(15).fill(null));
+      
+      // Digit positions with offsets (similar to test-4digit.html)
+      const digitPositions = [
+        {digit: timeStr[0], startX: 1, startY: 1},  // First hour digit
+        {digit: timeStr[1], startX: 4, startY: 1},  // Second hour digit
+        {digit: timeStr[2], startX: 8, startY: 1},  // First minute digit
+        {digit: timeStr[3], startX: 11, startY: 1}  // Second minute digit
+      ];
+      
+      // Apply each digit to the grid
+      digitPositions.forEach(pos => {
+        const digitData = digitPatterns[pos.digit] || [];
+        
+        for (let y = 0; y < 6 && pos.startY + y < 8; y++) {
+          for (let x = 0; x < 3 && pos.startX + x < 15; x++) {
+            newGrid[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || null;
+          }
+        }
+      });
+      
+      timeGrid.update(newGrid);
+    }
+    
+    // Initial update and set interval
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
 </body>
 </html>

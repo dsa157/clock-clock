@@ -3,34 +3,39 @@
 <head>
   <title>Digit 0 Test</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    #clock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(6, 60px);
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
   <div style="padding: 20px;">
     <h1>Digit 0 Test</h1>
-    <div id="clock-grid" style="display: grid; grid-template-columns: repeat(3, 60px); gap: 10px;"></div>
+    <div id="clock-grid"></div>
   </div>
 
   <script type="module">
-    import { Clock } from '../clock.js';
+    import { ClockGrid } from '../clock.js';
     import digits from '../digits.json';
 
-    function createDigitTest() {
-      const grid = document.getElementById('clock-grid');
-      
-      // Create 3x6 grid for digit 0
-      for (let y = 0; y < 6; y++) {
-        for (let x = 0; x < 3; x++) {
-          const canvas = document.createElement('canvas');
-          canvas.width = 60;
-          canvas.height = 60;
-          grid.appendChild(canvas);
-          
-          new Clock(canvas, x, y, '0');
-        }
+    // Create grid definition from digit 0 pattern
+    const gridDef = [];
+    for (let y = 0; y < 6; y++) {
+      const row = [];
+      for (let x = 0; x < 3; x++) {
+        row.push(digits['0'][y][x]);
       }
+      gridDef.push(row);
     }
 
-    createDigitTest();
+    new ClockGrid(
+      document.getElementById('clock-grid'),
+      gridDef
+    );
   </script>
 </body>
 </html>

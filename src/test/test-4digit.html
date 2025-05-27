@@ -3,91 +3,94 @@
 <head>
   <title>4-Digit Clock Display</title>
   <link rel="stylesheet" href="../styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #digit-grid {
+      display: grid;
+      grid-template-columns: repeat(15, 60px);
+      grid-template-rows: repeat(8, 60px);
+      gap: 5px;
+    }
+    .controls {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <div class="controls">
-    <h1 id="display-title">4-Digit Display: 5678</h1>
-    <div class="input-container">
-      <input type="text" id="digit-input" maxlength="4" placeholder="Enter 4 digits">
-      <button id="update-btn">Update</button>
-    </div>
+    <h1 id="display-title">4-Digit Display</h1>
+    <input type="text" id="time-input" placeholder="Enter 4 digits (e.g. 1234)" value="5678">
+    <button id="update-btn">Update</button>
   </div>
-  <div id="clock-grid" class="grid"></div>
+  
+  <div id="digit-grid"></div>
 
   <script type="module">
-    import { Clock } from '../clock.js';
+    import { ClockGrid } from '../clock.js';
+    import digitPatterns from '../digits.json' assert { type: 'json' };
+
+    // Initialize with default digits
+    let currentDigits = '5678';
     
-    // Get digits from URL or use default
-    const urlParams = new URLSearchParams(window.location.search);
-    let displayDigits = urlParams.get('digits') || '5678';
+    // Create initial grid
+    create4DigitDisplay(currentDigits);
     
-    // Validate digits (only 0-9 allowed)
-    displayDigits = displayDigits.replace(/[^0-9]/g, '').slice(0, 4);
-    if (displayDigits.length < 4) displayDigits = '5678';
-    
-    // Digit positions: digit 1 (col 1), digit 2 (col 4), digit 3 (col 8), digit 4 (col 11)
-    const digitPositions = [
-      {digit: 0, startX: 1, startY: 1},  // Digit 1 (5)
-      {digit: 1, startX: 4, startY: 1},  // Digit 2 (6)
-      {digit: 2, startX: 8, startY: 1},  // Digit 3 (7)
-      {digit: 3, startX: 11, startY: 1}  // Digit 4 (8)
-    ];
+    // Setup event listeners
+    document.getElementById('update-btn').addEventListener('click', () => {
+      const input = document.getElementById('time-input').value;
+      if (input.length === 4) {
+        currentDigits = input;
+        create4DigitDisplay(currentDigits);
+      }
+    });
 
     function create4DigitDisplay(digits) {
-      const grid = document.getElementById('clock-grid');
-      grid.innerHTML = '';
+      console.log('Creating 4-digit display for:', digits);
       
       // Update title
       document.getElementById('display-title').textContent = `4-Digit Display: ${digits}`;
       
-      // Create 15x8 grid
-      for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < 15; x++) {
-          const cell = document.createElement('div');
-          cell.className = 'clock-face';
-          
-          // Find which digit this position belongs to
-          let currentDigit = null;
-          let currentPos = null;
-          for (const pos of digitPositions) {
-            if (x >= pos.startX && x < pos.startX + 3 && 
-                y >= pos.startY && y < pos.startY + 6) {
-              currentDigit = digits[pos.digit];
-              currentPos = pos;
-              break;
-            }
+      // Create 15x8 null grid
+      const gridDef = Array(8).fill().map(() => Array(15).fill(null));
+      console.log('Created empty 15x8 grid');
+      
+      // Initialize grid with null values first
+      if (window.digitGrid) {
+        window.digitGrid.update(gridDef);
+      } else {
+        window.digitGrid = new ClockGrid(
+          document.getElementById('digit-grid'), 
+          gridDef
+        );
+      }
+      
+      // Digit positions with offsets
+      const digitPositions = [
+        {digit: digits[0], startX: 1, startY: 1},  // First digit
+        {digit: digits[1], startX: 4, startY: 1},  // Second digit
+        {digit: digits[2], startX: 8, startY: 1},  // Third digit
+        {digit: digits[3], startX: 11, startY: 1}  // Fourth digit
+      ];
+      
+      console.log('Digit positions:', digitPositions);
+      
+      // Apply each digit to the grid
+      digitPositions.forEach(pos => {
+        console.log(`Processing digit ${pos.digit} at (${pos.startX},${pos.startY})`);
+        const digitData = digitPatterns[pos.digit] || [];
+        console.log('Digit pattern:', digitData);
+        
+        for (let y = 0; y < 6 && pos.startY + y < 8; y++) {
+          for (let x = 0; x < 3 && pos.startX + x < 15; x++) {
+            gridDef[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || null;
           }
-          
-          if (currentDigit !== null && currentPos !== null) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 60;
-            canvas.height = 60;
-            cell.appendChild(canvas);
-            
-            // Calculate position within digit (0-2, 0-5)
-            const digitX = x - currentPos.startX;
-            const digitY = y - currentPos.startY;
-            
-            new Clock(canvas, digitX, digitY, currentDigit);
-          }
-          
-          grid.appendChild(cell);
         }
-      }
+      });
+      
+      console.log('Final grid definition:', gridDef);
+      
+      // Update grid with digits
+      window.digitGrid.update(gridDef);
     }
-
-    // Initialize with current digits
-    create4DigitDisplay(displayDigits);
-    
-    // Add input handler
-    document.getElementById('update-btn').addEventListener('click', () => {
-      const newDigits = document.getElementById('digit-input').value;
-      if (newDigits.length === 4) {
-        window.history.pushState({}, '', `?digits=${newDigits}`);
-        create4DigitDisplay(newDigits);
-      }
-    });
   </script>
 </body>
 </html>

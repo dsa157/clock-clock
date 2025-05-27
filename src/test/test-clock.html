@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clock Test</title>
+  <link rel="stylesheet" href="/styles.css?v=${Date.now()}">
+  <style>
+    #test-clock {
+      margin: 20px;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Single Clock Test</h2>
+  <canvas id="test-clock"></canvas>
+
+  <script type="module">
+    import { Clock } from '../clock.js';
+    
+    const canvas = document.getElementById('test-clock');
+    canvas.width = 200;
+    canvas.height = 200;
+    
+    // Initialize at 12:00
+    const clock = new Clock(canvas, '12:00');
+    
+    // Smooth animation
+    let startTime = Date.now();
+    function animate() {
+      const elapsed = (Date.now() - startTime) / 1000; // seconds
+      const minutes = (elapsed * 60) % 60;
+      const hours = 12 + (minutes / 60);
+      
+      clock.update(`${Math.floor(hours)}:${String(Math.floor(minutes)).padStart(2, '0')}`);
+      requestAnimationFrame(animate);
+    }
+    
+    // Start animation after 2 second delay
+    setTimeout(() => {
+      startTime = Date.now();
+      animate();
+    }, 2000);
+  </script>
+</body>
+</html>
