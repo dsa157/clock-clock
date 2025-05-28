@@ -24,6 +24,14 @@
 
 ### Changed
 - Refactored time display logic in `index.html` and `test-4digit.html` to use new shared implementation
+- Refactored animation system to decentralize control (@username)
+- Each Clock now manages its own animation state
+- ClockGrid coordinates start/stop of animations
+- Improved smoothness of simultaneous hand movement
+
+### Fixed
+- Removed jerky staggered hand movement
+- Fixed direct path calculation between positions
 
 ### Removed
 - Removed duplicate grid creation logic from multiple files
