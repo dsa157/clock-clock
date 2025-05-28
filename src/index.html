@@ -17,45 +17,17 @@
   <script type="module">
     import { ClockGrid } from './clock.js';
     import digitPatterns from './digits.json' assert { type: 'json' };
+    import { TimeDisplay } from './time-display.js';
     
-    // Initialize 15x8 null grid
+    // Initialize display
+    const timeDisplay = new TimeDisplay(digitPatterns);
     const gridContainer = document.getElementById('clock-grid');
-    const timeGrid = new ClockGrid(gridContainer, Array(8).fill().map(() => Array(15).fill(null)));
+    const clockGrid = new ClockGrid(gridContainer, timeDisplay.updateWithCurrentTime());
     
-    function updateTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const timeStr = hours + minutes;
-      
-      // Create 15x8 null grid
-      const newGrid = Array(8).fill().map(() => Array(15).fill(null));
-      
-      // Digit positions with offsets (similar to test-4digit.html)
-      const digitPositions = [
-        {digit: timeStr[0], startX: 1, startY: 1},  // First hour digit
-        {digit: timeStr[1], startX: 4, startY: 1},  // Second hour digit
-        {digit: timeStr[2], startX: 8, startY: 1},  // First minute digit
-        {digit: timeStr[3], startX: 11, startY: 1}  // Second minute digit
-      ];
-      
-      // Apply each digit to the grid
-      digitPositions.forEach(pos => {
-        const digitData = digitPatterns[pos.digit] || [];
-        
-        for (let y = 0; y < 6 && pos.startY + y < 8; y++) {
-          for (let x = 0; x < 3 && pos.startX + x < 15; x++) {
-            newGrid[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || null;
-          }
-        }
-      });
-      
-      timeGrid.update(newGrid);
-    }
-    
-    // Initial update and set interval
-    updateTime();
-    setInterval(updateTime, 1000);
+    // Update every second
+    setInterval(() => {
+      clockGrid.update(timeDisplay.updateWithCurrentTime());
+    }, 1000);
   </script>
 </body>
 </html>

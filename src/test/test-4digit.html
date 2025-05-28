@@ -27,70 +27,23 @@
   <script type="module">
     import { ClockGrid } from '../clock.js';
     import digitPatterns from '../digits.json' assert { type: 'json' };
-
-    // Initialize with default digits
-    let currentDigits = '5678';
+    import { TimeDisplay } from '../time-display.js';
     
-    // Create initial grid
-    create4DigitDisplay(currentDigits);
+    // Initialize with default digits
+    const timeDisplay = new TimeDisplay(digitPatterns, '5678');
+    const digitGrid = new ClockGrid(
+      document.getElementById('digit-grid'), 
+      timeDisplay.createGrid()
+    );
     
     // Setup event listeners
     document.getElementById('update-btn').addEventListener('click', () => {
       const input = document.getElementById('time-input').value;
       if (input.length === 4) {
-        currentDigits = input;
-        create4DigitDisplay(currentDigits);
+        digitGrid.update(timeDisplay.updateWithDigits(input));
+        document.getElementById('display-title').textContent = `4-Digit Display: ${input}`;
       }
     });
-
-    function create4DigitDisplay(digits) {
-      console.log('Creating 4-digit display for:', digits);
-      
-      // Update title
-      document.getElementById('display-title').textContent = `4-Digit Display: ${digits}`;
-      
-      // Create 15x8 null grid
-      const gridDef = Array(8).fill().map(() => Array(15).fill(null));
-      console.log('Created empty 15x8 grid');
-      
-      // Initialize grid with null values first
-      if (window.digitGrid) {
-        window.digitGrid.update(gridDef);
-      } else {
-        window.digitGrid = new ClockGrid(
-          document.getElementById('digit-grid'), 
-          gridDef
-        );
-      }
-      
-      // Digit positions with offsets
-      const digitPositions = [
-        {digit: digits[0], startX: 1, startY: 1},  // First digit
-        {digit: digits[1], startX: 4, startY: 1},  // Second digit
-        {digit: digits[2], startX: 8, startY: 1},  // Third digit
-        {digit: digits[3], startX: 11, startY: 1}  // Fourth digit
-      ];
-      
-      console.log('Digit positions:', digitPositions);
-      
-      // Apply each digit to the grid
-      digitPositions.forEach(pos => {
-        console.log(`Processing digit ${pos.digit} at (${pos.startX},${pos.startY})`);
-        const digitData = digitPatterns[pos.digit] || [];
-        console.log('Digit pattern:', digitData);
-        
-        for (let y = 0; y < 6 && pos.startY + y < 8; y++) {
-          for (let x = 0; x < 3 && pos.startX + x < 15; x++) {
-            gridDef[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || null;
-          }
-        }
-      });
-      
-      console.log('Final grid definition:', gridDef);
-      
-      // Update grid with digits
-      window.digitGrid.update(gridDef);
-    }
   </script>
 </body>
 </html>

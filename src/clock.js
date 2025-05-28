@@ -33,6 +33,10 @@ export class Clock {
     this.drawClock(angles.hour, angles.minute);
   }
 
+  updateAngles(hourAngle, minuteAngle) {
+    this.drawClock(hourAngle, minuteAngle);
+  }
+
   drawClock(hourAngle, minuteAngle) {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
@@ -86,32 +90,23 @@ export class ClockGrid {
   }
 
   render() {
-    console.log('ClockGrid.render() called');
-    console.log('Grid definition:', this.gridDef);
-    
     this.container.innerHTML = '';
     this.container.style.display = 'grid';
     this.container.style.gridTemplateRows = `repeat(${this.gridDef.length}, 60px)`;
     this.container.style.gridTemplateColumns = `repeat(${this.gridDef[0].length}, 60px)`;
     this.container.style.gap = '5px';
     
-    console.log('Grid container styles applied');
-    
     this.clocks = [];
-    
     for (let y = 0; y < this.gridDef.length; y++) {
-      for (let x = 0; x < this.gridDef[0].length; x++) {
+      for (let x = 0; x < this.gridDef[y].length; x++) {
         const canvas = document.createElement('canvas');
         canvas.width = 60;
         canvas.height = 60;
+        this.container.appendChild(canvas);
         
         const timeStr = this.gridDef[y][x];
-        console.log(`Creating clock at (${x},${y}) with time:`, timeStr);
-        
         const clock = new Clock(canvas, timeStr);
         this.clocks.push({ x, y, clock });
-        
-        this.container.appendChild(canvas);
       }
     }
   }
