@@ -143,14 +143,14 @@
     "name": "Current Time",
     "description": "Time display with border pattern",
     "grid": [
-      ["border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
-      ["border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border"]
+      ["3:30", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:30"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["6:00", null, null, null, null, null, null, null, null, null, null, null, null, null, "6:00"],
+      ["3:00", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:15", "9:00"]
     ]
   }
 ]

@@ -59,15 +59,15 @@
     
     // Top-level imports
     import { ClockGrid } from '../clock.js';
-    import patterns from '../patterns.json';
     import digitPatterns from '../digits.json';
     import { TimeDisplay } from '../time-display.js';
+    import patterns from '../patterns.json';
     
     console.log('[DEBUG] All imports successful');
     
     try {
       console.log('[DEBUG] Initializing TimeDisplay');
-      const timeDisplay = new TimeDisplay(digitPatterns);
+      const timeDisplay = new TimeDisplay(digitPatterns, patterns);
       console.log('[DEBUG] TimeDisplay initialized:', timeDisplay);
       
       // Load patterns into dropdowns
@@ -108,7 +108,7 @@
         
         if (patternName === 'Current Time') {
           console.log('[PatternAnimation] Initializing current time display');
-          const timeGrid = timeDisplay.getCurrentTimeGrid();
+          const timeGrid = timeDisplay.getBorderedTimeGrid();
           const currentTimePattern = patterns.find(p => p.name === 'Current Time');
           console.log('[ANIMATION] Current Time pattern:', JSON.stringify(currentTimePattern, null, 2));
           clockGrid = new ClockGrid(container, timeGrid);
@@ -133,7 +133,7 @@
         // Initialize start state
         let startState;
         if (startPattern === 'Current Time') {
-          startState = timeDisplay.getCurrentTimeGrid();
+          startState = timeDisplay.getBorderedTimeGrid();
         } else {
           startState = patterns.find(p => p.name === startPattern)?.grid || [];
         }
@@ -141,7 +141,7 @@
         // Initialize end state
         let endState;
         if (endPattern === 'Current Time') {
-          endState = timeDisplay.getCurrentTimeGrid();
+          endState = timeDisplay.getBorderedTimeGrid();
         } else {
           endState = patterns.find(p => p.name === endPattern)?.grid || [];
         }

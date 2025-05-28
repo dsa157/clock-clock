@@ -92,4 +92,26 @@ export class TimeDisplay {
     
     return template;
   }
+
+  getBorderedTimeGrid() {
+    const currentTimePattern = this.patterns.find(p => p.name === 'Current Time');
+    if (!currentTimePattern) {
+      console.error('Current Time pattern not found');
+      return this.getCurrentTimeGrid();
+    }
+
+    const updatedTimeGrid = this.getCurrentTimeGrid();
+    const borderedGrid = JSON.parse(JSON.stringify(currentTimePattern.grid));
+    
+    // Merge time into bordered template
+    for (let i = 0; i < updatedTimeGrid.length && i < borderedGrid.length; i++) {
+      for (let j = 0; j < updatedTimeGrid[i].length && j < borderedGrid[i].length; j++) {
+        if (updatedTimeGrid[i][j] !== null) {
+          borderedGrid[i][j] = updatedTimeGrid[i][j];
+        }
+      }
+    }
+    
+    return borderedGrid;
+  }
 }

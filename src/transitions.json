@@ -1,4 +1,6 @@
 {
+  "initialDisplayDuration": 1,
+  "transitionDelay": 2,
   "transitions": [
     {
       "pattern": "Current Time",
@@ -6,11 +8,11 @@
     },
     {
       "pattern": "random",
-      "duration": 5
+      "duration": 3
     },
     {
       "pattern": "random",
-      "duration": 5
+      "duration": 3
     },
     {
       "pattern": "Current Time",
@@ -18,11 +20,11 @@
     },
     {
       "pattern": "random",
-      "duration": 5
+      "duration": 3
     },
     {
       "pattern": "random",
-      "duration": 5
+      "duration": 3
     }
   ]
 }
