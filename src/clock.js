@@ -53,12 +53,7 @@ export class Clock {
 
   animateTo(targetTime, duration = 1000, callback) {
     const startAngles = this.timeToAngle(this.timeStr);
-    const targetAngles = this.timeToAngle(targetTime);
-    
-    // Debug log
-    if (isNaN(startAngles.hour) || isNaN(targetAngles.hour)) {
-      console.warn(`[Animation] Invalid angles - start: ${this.timeStr}, target: ${targetTime}`);
-    }
+    const targetAngles = this.timeToAngle(targetTime === 'Current Time' ? TimeDisplay.getCurrentTime() : targetTime);
     
     let startTime = null;
     
@@ -74,12 +69,12 @@ export class Clock {
       
       if (progress < 1) {
         requestAnimationFrame(animate);
-      } else if (callback) {
-        callback();
+      } else {
+        this.timeStr = targetTime;
+        if (callback) callback();
       }
     };
     
-    cancelAnimationFrame(this.animationId);
     requestAnimationFrame(animate);
   }
 
@@ -267,6 +262,15 @@ export class ClockGrid {
     
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
+        const isCurrentTime = endGrid[row][col] === 'Current Time';
+        
+        // Skip animation for Current Time clocks (they handle it themselves)
+        if (isCurrentTime) {
+          completed++;
+          if (completed === total && callback) callback();
+          continue;
+        }
+        
         this.clocks[row][col].animateTo(
           endGrid[row][col], 
           duration,
