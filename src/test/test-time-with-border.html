@@ -23,6 +23,8 @@
 <body>
   <div class="controls">
     <h1>Test Time With Border</h1>
+    <button id="update-btn">Update</button>
+    <input id="digits-input" type="text" />
   </div>
   
   <div id="clockGridContainer"></div>
@@ -39,9 +41,21 @@
     function initClockGrid() {
       const timeGrid = timeDisplay.getBorderedTimeGrid();
       container.clockGrid = new ClockGrid(container, timeGrid);
+      
+      // Initial display
+      const initialGrid = timeDisplay.createGrid();
+      container.clockGrid.update(initialGrid);
     }
 
     initClockGrid();
+
+    document.getElementById('update-btn').addEventListener('click', () => {
+      const newDigits = document.getElementById('digits-input').value;
+      if (newDigits.length === 4) {
+        timeDisplay.currentDigits = newDigits.split('');
+        container.clockGrid.animateAllTo(timeDisplay.createGrid());
+      }
+    });
   </script>
 </body>
 </html>

@@ -1,18 +1,20 @@
 // Time display utilities for 4-digit clock
 
 export class TimeDisplay {
-  static nullTime = "4:10";
+  static nullTime = "7:25";
 
-  constructor(digitPatterns, patterns) {
+  constructor(digitPatterns, patterns, use24HourFormat = false) {
     this.digitPatterns = digitPatterns;
     this.patterns = patterns;
-    console.log('[TimeDisplay] Initialized with digit patterns:', Object.keys(digitPatterns));
+    this.use24HourFormat = use24HourFormat;
+    console.log('[TimeDisplay] Initialized with format:', 
+              this.use24HourFormat ? '24-hour' : '12-hour');
   }
 
   // Create 15x8 grid for current digits
   createGrid() {
     console.log('[TimeDisplay] Creating grid for digits:', this.currentDigits);
-    const gridDef = Array(8).fill().map(() => Array(15).fill(null));
+    const gridDef = Array(8).fill().map(() => Array(15).fill(TimeDisplay.nullTime));
     
     const digitPositions = [
       {digit: this.currentDigits[0], startX: 1, startY: 1},
@@ -21,15 +23,13 @@ export class TimeDisplay {
       {digit: this.currentDigits[3], startX: 11, startY: 1}
     ];
 
-    //console.log('[TimeDisplay] Digit positions:', digitPositions);
-    
     digitPositions.forEach(pos => {
       const digitData = this.digitPatterns[pos.digit] || [];
       console.log(`[TimeDisplay] Processing digit ${pos.digit} with data:`, digitData);
       
       for (let y = 0; y < 6; y++) {
         for (let x = 0; x < 3; x++) {
-          gridDef[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || null;
+          gridDef[pos.startY + y][pos.startX + x] = digitData[y]?.[x] || TimeDisplay.nullTime;
         }
       }
     });
@@ -37,10 +37,16 @@ export class TimeDisplay {
     return gridDef;
   }
 
-  // Update with current time (zero-padded)
+  // Update with current time (format based on setting)
   updateWithCurrentTime() {
     const now = new Date();
-    this.currentDigits = now.getHours().toString().padStart(2, '0') + 
+    let hours = now.getHours();
+    
+    if (!this.use24HourFormat) {
+      hours = hours % 12 || 12; // Convert to 12-hour format
+    }
+    
+    this.currentDigits = hours.toString().padStart(2, '0') + 
                        now.getMinutes().toString().padStart(2, '0');
     console.log('[TimeDisplay] Current digits:', this.currentDigits);
     const grid = this.createGrid();
@@ -71,7 +77,13 @@ export class TimeDisplay {
   getCurrentTimeGrid() {
     const template = this.getTemplateGrid();
     const now = new Date();
-    const currentDigits = now.getHours().toString().padStart(2, '0') + 
+    let hours = now.getHours();
+    
+    if (!this.use24HourFormat) {
+      hours = hours % 12 || 12; // Convert to 12-hour format
+    }
+    
+    const currentDigits = hours.toString().padStart(2, '0') + 
                        now.getMinutes().toString().padStart(2, '0');
     
     const digitPositions = [
@@ -113,5 +125,10 @@ export class TimeDisplay {
     }
     
     return borderedGrid;
+  }
+
+  // Add method to toggle format
+  setTimeFormat(use24HourFormat) {
+    this.use24HourFormat = use24HourFormat;
   }
 }

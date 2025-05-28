@@ -1,33 +1,49 @@
+/* Reset and Base Styles */
 body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #111;
-    color: white; 
-    font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #111;
+  overflow: hidden;
+  color: white; 
+  font-family: sans-serif;
 }
 
+/* Clock Grid Container */
+.clock-grid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
 
-/* Dynamic Grid Layout */
 #clock-grid {
-    display: grid;
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 4px;
-    width: 100vw;
-    height: calc(100vh - 40px);
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 10px;
-    overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(15, 60px);
+  grid-template-rows: repeat(8, 60px);
+  gap: 8px;
+  margin: 0 auto;
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-sizing: border-box;
 }
 
-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
+/* Clock Elements */
+#clock-grid canvas {
+  background: #333;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* Input Controls */
@@ -72,6 +88,8 @@ input, button {
     --minute-hand-thickness: 6px;
     --hour-hand-length: 0.6;   /* Percentage of radius */
     --minute-hand-length: 0.8; /* Percentage of radius */
+    --clock-face-color: #111;      /* Change clock face fill color */
+    --clock-border-color: #222;  
   }
 
   .clock-face {

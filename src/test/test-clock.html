@@ -32,7 +32,7 @@
       const minutes = (elapsed * 60) % 60;
       const hours = 12 + (minutes / 60);
       
-      clock.update(`${Math.floor(hours)}:${String(Math.floor(minutes)).padStart(2, '0')}`);
+      clock.update(`${String(Math.floor(hours)).padStart(2, '0')}:${String(Math.floor(minutes)).padStart(2, '0')}`);
       requestAnimationFrame(animate);
     }
     
@@ -40,7 +40,7 @@
     setTimeout(() => {
       startTime = Date.now();
       animate();
-    }, 2000);
+    }, 1000);
   </script>
 </body>
 </html>

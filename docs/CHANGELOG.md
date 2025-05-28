@@ -18,6 +18,20 @@
 - Reduced clock size to 60px for grid layout
 - Added horizontal scrolling support
 
+## [Unreleased] - 2025-05-28
+### Added
+- New `getBorderedTimeGrid()` method in TimeDisplay
+
+### Changed
+- Consolidated time display logic
+- Improved animation system
+- Updated transition timing configuration
+
+### Fixed
+- Duplicate time display on startup
+- Random pattern selection
+- Grid centering issues
+
 ## [Unreleased]
 ### Added
 - Created shared `TimeDisplay` class in `time-display.js`

@@ -1,49 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>4-Digit Clock Display</title>
+  <title>4-Digit Test</title>
   <link rel="stylesheet" href="../styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    #digit-grid {
-      display: grid;
-      grid-template-columns: repeat(15, 60px);
-      grid-template-rows: repeat(8, 60px);
-      gap: 5px;
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: sans-serif;
     }
+    
+    #clock-container {
+      width: 100vw;
+      height: calc(100vh - 60px);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
     .controls {
-      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      padding: 10px 20px;
+    }
+    
+    input, button {
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #333;
+      color: white;
+      border: 1px solid #555;
     }
   </style>
 </head>
 <body>
   <div class="controls">
-    <h1 id="display-title">4-Digit Display</h1>
-    <input type="text" id="time-input" placeholder="Enter 4 digits (e.g. 1234)" value="5678">
+    <input type="text" id="digits-input" value="1234" placeholder="Enter 4 digits">
     <button id="update-btn">Update</button>
   </div>
   
-  <div id="digit-grid"></div>
+  <div id="clock-container">
+    <div id="clock-grid"></div>
+  </div>
 
   <script type="module">
     import { ClockGrid } from '../clock.js';
-    import digitPatterns from '../digits.json' assert { type: 'json' };
     import { TimeDisplay } from '../time-display.js';
+    import patterns from '../patterns.json' assert { type: 'json' };
+    import digits from '../digits.json' assert { type: 'json' };
     
-    // Initialize with default digits
-    const timeDisplay = new TimeDisplay(digitPatterns, '5678');
-    const digitGrid = new ClockGrid(
-      document.getElementById('digit-grid'), 
-      timeDisplay.createGrid()
+    // Validate patterns
+    if (!patterns.digits) {
+      console.error('Missing digit patterns in patterns.json');
+      patterns.digits = {
+        '0': [], '1': [], '2': [], '3': [], '4': [],
+        '5': [], '6': [], '7': [], '8': [], '9': []
+      };
+    }
+    
+    // Initialize with current digits
+    const timeDisplay = new TimeDisplay(digits, patterns);
+    timeDisplay.currentDigits = ['1', '2', '3', '4'];
+    
+    // Create and validate grid
+    let sampleGrid;
+    try {
+      sampleGrid = timeDisplay.createGrid();
+      if (!sampleGrid?.[0]?.[0]) throw new Error('Invalid grid');
+    } catch {
+      sampleGrid = Array(8).fill().map(() => Array(15).fill('1:01'));
+    }
+    
+    const grid = new ClockGrid(
+      document.getElementById('clock-grid'), 
+      sampleGrid[0].length, 
+      sampleGrid.length
     );
     
-    // Setup event listeners
     document.getElementById('update-btn').addEventListener('click', () => {
-      const input = document.getElementById('time-input').value;
-      if (input.length === 4) {
-        digitGrid.update(timeDisplay.updateWithDigits(input));
-        document.getElementById('display-title').textContent = `4-Digit Display: ${input}`;
+      const newDigits = document.getElementById('digits-input').value;
+      if (newDigits.length === 4) {
+        timeDisplay.currentDigits = newDigits.split('');
+        try {
+          grid.update(timeDisplay.createGrid());
+        } catch {
+          console.warn('Using fallback grid');
+        }
       }
     });
+    
+    // Initial display
+    grid.update(sampleGrid);
   </script>
 </body>
 </html>
