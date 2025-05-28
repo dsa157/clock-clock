@@ -138,5 +138,18 @@
       ["8:10","10:20","8:10","10:20","8:10","10:20","8:10","10:20","8:10","10:20","8:10","10:20","8:10","10:20","8:10"],
       ["6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00","6:00"]
     ]
+  },
+  {
+    "name": "Current Time",
+    "grid": [
+      ["4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
+      ["4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10"]
+    ]
   }
 ]

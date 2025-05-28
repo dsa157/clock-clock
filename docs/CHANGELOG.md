@@ -17,3 +17,13 @@
 - Updated Vite CSP configuration to allow inline scripts
 - Reduced clock size to 60px for grid layout
 - Added horizontal scrolling support
+
+## [Unreleased]
+### Added
+- Created shared `TimeDisplay` class in `time-display.js`
+
+### Changed
+- Refactored time display logic in `index.html` and `test-4digit.html` to use new shared implementation
+
+### Removed
+- Removed duplicate grid creation logic from multiple files

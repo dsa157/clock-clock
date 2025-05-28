@@ -45,8 +45,8 @@
       <label for="endPattern">End:</label>
       <select id="endPattern"></select>
       
-      <label for="duration">Duration (s):</label>
-      <input type="number" id="duration" value="20" min="1" max="300">
+      <label for="duration">Duration (seconds):</label>
+      <input type="number" id="duration" value="5" min="1" max="60">
       
       <button id="animateBtn">Animate</button>
     </div>
@@ -55,158 +55,108 @@
   <div id="clockGridContainer"></div>
 
   <script type="module">
-    import { ClockGrid, Clock } from '../clock.js';
+    console.log('[DEBUG] Script execution started');
+    
+    // Top-level imports
+    import { ClockGrid } from '../clock.js';
     import patterns from '../patterns.json';
-    import digits from '../digits.json';
+    import digitPatterns from '../digits.json';
+    import { TimeDisplay } from '../time-display.js';
     
-    // Load patterns into dropdowns
-    const startSelect = document.getElementById('startPattern');
-    const endSelect = document.getElementById('endPattern');
+    console.log('[DEBUG] All imports successful');
     
-    patterns.forEach(pattern => {
-      const option = document.createElement('option');
-      option.value = pattern.name;
-      option.textContent = pattern.name;
-      startSelect.appendChild(option.cloneNode(true));
-      endSelect.appendChild(option);
-    });
-    
-    // Add Current Time option to end dropdown
-    const currentTimeOption = document.createElement('option');
-    currentTimeOption.value = '__current_time__';
-    currentTimeOption.textContent = 'Current Time';
-    endSelect.appendChild(currentTimeOption);
-    
-    function getCurrentTimeGrid() {
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
+    try {
+      console.log('[DEBUG] Initializing TimeDisplay');
+      const timeDisplay = new TimeDisplay(digitPatterns);
+      console.log('[DEBUG] TimeDisplay initialized:', timeDisplay);
       
-      // Create zero-padded time string (e.g. "13:05")
-      const timeString = `${hours}:${minutes}`;
+      // Load patterns into dropdowns
+      const startSelect = document.getElementById('startPattern');
+      const endSelect = document.getElementById('endPattern');
       
-      // Initialize with current time using your existing createTimeGrid function
-      return createTimeGrid(timeString);
-    }
-    
-    function safeTimeParse(timeStr) {
-      if (!timeStr || typeof timeStr !== 'string') return { hour: 0, minute: 0 };
-      try {
-        const [h, m] = timeStr.split(':').map(Number);
-        return {
-          hour: (h % 12) * 30 + (m || 0) * 0.5,
-          minute: (m || 0) * 6
-        };
-      } catch {
-        return { hour: 0, minute: 0 };
-      }
-    }
-    
-    function initClockGrid(patternName) {
-      // Clean up previous grid
-      if (clockGrid) {
+      // Add all regular patterns (excluding Current Time) first
+      patterns.filter(p => p.name !== 'Current Time').forEach(pattern => {
+        const option = document.createElement('option');
+        option.value = pattern.name;
+        option.textContent = pattern.name;
+        startSelect.appendChild(option.cloneNode(true));
+        endSelect.appendChild(option);
+      });
+      
+      // Add Current Time option separately to both dropdowns
+      const currentTimeOption = document.createElement('option');
+      currentTimeOption.value = 'Current Time';
+      currentTimeOption.textContent = 'Current Time';
+      startSelect.appendChild(currentTimeOption.cloneNode(true));
+      endSelect.appendChild(currentTimeOption);
+      
+      let clockGrid;
+      let animationId;
+      
+      function initClockGrid(patternName) {
+        // Clean up previous grid
+        if (clockGrid) {
+          const container = document.getElementById('clockGridContainer');
+          container.innerHTML = '';
+        }
+        
         const container = document.getElementById('clockGridContainer');
-        container.innerHTML = '';
-      }
-      
-      const container = document.getElementById('clockGridContainer');
-      
-      // Handle current time initialization
-      if (patternName === '__current_time__') {
-        clockGrid = new ClockGrid(container, getCurrentTimeGrid());
-      } else {
-        const pattern = patterns.find(p => p.name === patternName);
-        if (pattern) {
-          clockGrid = new ClockGrid(container, pattern.grid);
-        }
-      }
-    }
-    
-    let clockGrid;
-    let animationId;
-    
-    function animatePatterns() {
-      const startPattern = startSelect.value;
-      let endPattern = endSelect.value;
-      const duration = parseInt(document.getElementById('duration').value) * 1000;
-      
-      if (!startPattern || !endPattern) return;
-      
-      const startPatternData = patterns.find(p => p.name === startPattern);
-      let endPatternData;
-      
-      if (endPattern === '__current_time__') {
-        endPatternData = { 
-          name: 'Current Time', 
-          grid: getCurrentTimeGrid() 
-        };
-      } else {
-        endPatternData = patterns.find(p => p.name === endPattern);
-      }
-      
-      if (!startPatternData || !endPatternData) return;
-      
-      initClockGrid(startPattern);
-      
-      const startTime = Date.now();
-      const endTime = startTime + duration;
-      
-      // Pre-calculate start and end angles for all clocks
-      const startAngles = [];
-      const endAngles = [];
-      for (let i = 0; i < clockGrid.clocks.length; i++) {
-        const clock = clockGrid.clocks[i];
-        const startTimeStr = startPatternData.grid[clock.y][clock.x];
-        const startAnglesObj = safeTimeParse(startTimeStr);
-        startAngles[i] = {
-          hour: startAnglesObj.hour,
-          minute: startAnglesObj.minute
-        };
         
-        const endTimeStr = endPatternData.grid[clock.y][clock.x];
-        const endAnglesObj = safeTimeParse(endTimeStr);
-        endAngles[i] = {
-          hour: endAnglesObj.hour,
-          minute: endAnglesObj.minute
-        };
-      }
-      
-      function updateAnimation() {
-        const now = Date.now();
-        const progress = Math.min(1, (now - startTime) / duration);
-        
-        // Update each clock with interpolated angles
-        for (let i = 0; i < clockGrid.clocks.length; i++) {
-          const clock = clockGrid.clocks[i].clock;
-          const hourAngle = startAngles[i].hour + (endAngles[i].hour - startAngles[i].hour) * progress;
-          const minuteAngle = startAngles[i].minute + (endAngles[i].minute - startAngles[i].minute) * progress;
-          
-          // Create temporary canvas to draw interpolated state
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = clock.canvas.width;
-          tempCanvas.height = clock.canvas.height;
-          const tempClock = new Clock(tempCanvas, null);
-          tempClock.drawClock(hourAngle, minuteAngle);
-          
-          // Copy to visible clock
-          clock.ctx.clearRect(0, 0, clock.canvas.width, clock.canvas.height);
-          clock.ctx.drawImage(tempCanvas, 0, 0);
-        }
-        
-        if (progress < 1) {
-          animationId = requestAnimationFrame(updateAnimation);
+        if (patternName === 'Current Time') {
+          console.log('[PatternAnimation] Initializing current time display');
+          const timeGrid = timeDisplay.getCurrentTimeGrid();
+          clockGrid = new ClockGrid(container, timeGrid);
         } else {
-          cancelAnimationFrame(animationId);
-          // Ensure final state is exact
-          initClockGrid(endPattern);
+          const pattern = patterns.find(p => p.name === patternName);
+          if (pattern) {
+            console.log('[PatternAnimation] Initializing with pattern:', patternName);
+            // Ensure full grid is passed
+            clockGrid = new ClockGrid(container, pattern.grid);
+          }
         }
       }
       
-      cancelAnimationFrame(animationId);
-      updateAnimation();
+      function animatePatterns() {
+        const startPattern = startSelect.value;
+        const endPattern = endSelect.value;
+        const duration = parseInt(document.getElementById('duration').value) * 1000;
+        
+        if (!startPattern || !endPattern) return;
+        
+        // Initialize start state
+        let startState;
+        if (startPattern === 'Current Time') {
+          startState = timeDisplay.getCurrentTimeGrid();
+        } else {
+          startState = patterns.find(p => p.name === startPattern)?.grid || [];
+        }
+        
+        // Initialize end state
+        let endState;
+        if (endPattern === 'Current Time') {
+          endState = timeDisplay.getCurrentTimeGrid();
+        } else {
+          endState = patterns.find(p => p.name === endPattern)?.grid || [];
+        }
+        
+        // Verify grid dimensions match
+        if (startState.length !== endState.length || 
+            startState[0]?.length !== endState[0]?.length) {
+          console.error('Grid dimensions do not match');
+          return;
+        }
+        
+        // Initialize clock with start state
+        initClockGrid(startPattern);
+        
+        // Use Clock class's built-in animation
+        clockGrid.animateGrid(startState, endState, duration);
+      }
+      
+      document.getElementById('animateBtn').addEventListener('click', animatePatterns);
+    } catch (error) {
+      console.error('[DEBUG] Initialization error:', error);
     }
-    
-    document.getElementById('animateBtn').addEventListener('click', animatePatterns);
   </script>
 </body>
 </html>

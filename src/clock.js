@@ -7,6 +7,7 @@ export class Clock {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.timeStr = timeStr;
+    this.animationId = null;
     if (timeStr !== null) this.update();
   }
 
@@ -35,6 +36,34 @@ export class Clock {
 
   updateAngles(hourAngle, minuteAngle) {
     this.drawClock(hourAngle, minuteAngle);
+  }
+
+  animateTo(targetTime, duration, callback) {
+    const startTime = Date.now();
+    const endTime = startTime + duration;
+    const startAngles = this.timeToAngle(this.timeStr);
+    const targetAngles = this.timeToAngle(targetTime);
+    
+    const animate = () => {
+      const now = Date.now();
+      const progress = Math.min(1, (now - startTime) / duration);
+      
+      // Interpolate angles
+      const currentHour = startAngles.hour + (targetAngles.hour - startAngles.hour) * progress;
+      const currentMinute = startAngles.minute + (targetAngles.minute - startAngles.minute) * progress;
+      
+      this.updateAngles(currentHour, currentMinute);
+      
+      if (progress < 1) {
+        this.animationId = requestAnimationFrame(animate);
+      } else {
+        this.timeStr = targetTime;
+        if (callback) callback();
+      }
+    };
+    
+    cancelAnimationFrame(this.animationId);
+    animate();
   }
 
   drawClock(hourAngle, minuteAngle) {
@@ -79,6 +108,25 @@ export class Clock {
     this.ctx.lineCap = 'butt';
     this.ctx.stroke();
   }
+
+  // Static method for time interpolation (doesn't need instance)
+  static interpolateTime(startTime, endTime, progress) {
+    // Linear progress (remove easing to prevent jumps)
+    
+    // Parse positions
+    const [startH, startM] = (startTime || '4:10').split(':').map(Number);
+    const [endH, endM] = (endTime || '4:10').split(':').map(Number);
+    
+    // Linear interpolation for each hand
+    const currentH = startH + (endH - startH) * progress;
+    const currentM = startM + (endM - startM) * progress;
+    
+    // Format as time string
+    const hour = (Math.round(currentH) % 12 + 12) % 12 || 12;
+    const minute = (Math.round(currentM) % 60 + 60) % 60;
+    
+    return `${hour}:${minute.toString().padStart(2, '0')}`;
+  }
 }
 
 export class ClockGrid {
@@ -86,19 +134,22 @@ export class ClockGrid {
     this.container = container;
     this.gridDef = gridDef;
     this.clocks = [];
+    this.rows = gridDef.length;
+    this.cols = gridDef[0].length;
     this.render();
   }
 
   render() {
     this.container.innerHTML = '';
     this.container.style.display = 'grid';
-    this.container.style.gridTemplateRows = `repeat(${this.gridDef.length}, 60px)`;
-    this.container.style.gridTemplateColumns = `repeat(${this.gridDef[0].length}, 60px)`;
+    this.container.style.gridTemplateRows = `repeat(${this.rows}, 60px)`;
+    this.container.style.gridTemplateColumns = `repeat(${this.cols}, 60px)`;
     this.container.style.gap = '5px';
     
     this.clocks = [];
-    for (let y = 0; y < this.gridDef.length; y++) {
-      for (let x = 0; x < this.gridDef[y].length; x++) {
+    for (let y = 0; y < this.rows; y++) {
+      this.clocks[y] = [];
+      for (let x = 0; x < this.cols; x++) {
         const canvas = document.createElement('canvas');
         canvas.width = 60;
         canvas.height = 60;
@@ -106,7 +157,7 @@ export class ClockGrid {
         
         const timeStr = this.gridDef[y][x];
         const clock = new Clock(canvas, timeStr);
-        this.clocks.push({ x, y, clock });
+        this.clocks[y][x] = clock;
       }
     }
   }
@@ -115,10 +166,35 @@ export class ClockGrid {
     console.log('ClockGrid.update() called with:', gridDef);
     if (gridDef) this.gridDef = gridDef;
     
-    this.clocks.forEach(({x, y, clock}) => {
-      const timeStr = this.gridDef[y][x];
-      console.log(`Updating clock at (${x},${y}) with time:`, timeStr);
-      clock.update(timeStr);
+    this.clocks.forEach((row, y) => {
+      row.forEach((clock, x) => {
+        const timeStr = this.gridDef[y][x];
+        console.log(`Updating clock at (${x},${y}) with time:`, timeStr);
+        clock.update(timeStr);
+      });
     });
+  }
+
+  // Animate between two grid states
+  animateGrid(startGrid, endGrid, duration, callback) {
+    let completed = 0;
+    const total = this.rows * this.cols;
+    
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        this.clocks[row][col].animateTo(
+          endGrid[row][col], 
+          duration,
+          () => {
+            completed++;
+            if (completed === total && callback) callback();
+          }
+        );
+      }
+    }
+  }
+
+  static interpolateTime(startTime, endTime, progress) {
+    return Clock.interpolateTime(startTime, endTime, progress);
   }
 }
