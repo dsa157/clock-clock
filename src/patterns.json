@@ -141,15 +141,16 @@
   },
   {
     "name": "Current Time",
+    "description": "Time display with border pattern",
     "grid": [
-      ["4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", null, null, null, null, null, null, null, null, null, null, null, null, null, "4:10"],
-      ["4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10", "4:10"]
+      ["border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "time", "border"],
+      ["border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border", "border"]
     ]
   }
 ]

@@ -1,8 +1,11 @@
 // Time display utilities for 4-digit clock
 
 export class TimeDisplay {
-  constructor(digitPatterns) {
+  static nullTime = "4:10";
+
+  constructor(digitPatterns, patterns) {
     this.digitPatterns = digitPatterns;
+    this.patterns = patterns;
     console.log('[TimeDisplay] Initialized with digit patterns:', Object.keys(digitPatterns));
   }
 
@@ -18,7 +21,7 @@ export class TimeDisplay {
       {digit: this.currentDigits[3], startX: 11, startY: 1}
     ];
 
-    console.log('[TimeDisplay] Digit positions:', digitPositions);
+    //console.log('[TimeDisplay] Digit positions:', digitPositions);
     
     digitPositions.forEach(pos => {
       const digitData = this.digitPatterns[pos.digit] || [];
@@ -54,14 +57,14 @@ export class TimeDisplay {
   getTemplateGrid() {
     // Return the base template with borders
     return [
-      Array(15).fill("4:10"),
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      ["4:10", ...Array(13).fill(null), "4:10"],
-      Array(15).fill("4:10")
+      Array(15).fill(TimeDisplay.nullTime),
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      [TimeDisplay.nullTime, ...Array(13).fill(null), TimeDisplay.nullTime],
+      Array(15).fill(TimeDisplay.nullTime)
     ];
   }
 

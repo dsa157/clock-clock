@@ -1,0 +1,28 @@
+{
+  "transitions": [
+    {
+      "pattern": "Current Time",
+      "duration": 5
+    },
+    {
+      "pattern": "random",
+      "duration": 5
+    },
+    {
+      "pattern": "random",
+      "duration": 5
+    },
+    {
+      "pattern": "Current Time",
+      "duration": 5
+    },
+    {
+      "pattern": "random",
+      "duration": 5
+    },
+    {
+      "pattern": "random",
+      "duration": 5
+    }
+  ]
+}

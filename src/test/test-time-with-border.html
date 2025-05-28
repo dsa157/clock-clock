@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pattern Animation Test</title>
+  <title>Test Time With Border</title>
   <link rel="stylesheet" href="../styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -37,17 +37,12 @@
 </head>
 <body>
   <div class="controls">
-    <h1>Pattern Animation Test</h1>
+    <h1>Test Time With Border</h1>
     <div class="input-container">
-      <label for="startPattern">Start:</label>
       <select id="startPattern"></select>
       
-      <label for="endPattern">End:</label>
       <select id="endPattern"></select>
-      
-      <label for="duration">Duration (seconds):</label>
-      <input type="number" id="duration" value="5" min="1" max="60">
-      
+            
       <button id="animateBtn">Animate</button>
     </div>
   </div>
@@ -126,7 +121,7 @@
       function animatePatterns() {
         const startPattern = startSelect.value;
         const endPattern = endSelect.value;
-        const duration = parseInt(document.getElementById('duration').value) * 1000;
+        const duration = 5 * 1000;
         
         if (!startPattern || !endPattern) return;
         

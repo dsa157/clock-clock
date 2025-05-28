@@ -78,10 +78,10 @@ input, button {
     aspect-ratio: 1;
     border-radius: 50%;
     overflow: visible;
-    background: #aaafff;
-    border: 1px solid #aaa;
-    fill: #aaaccc;
-    stroke: #aaa;
+    background: #0011ff;
+    border: 1px solid #0011ff;
+    fill: #0011ff;
+    stroke: #0011ff;
     stroke-width: 1px;
     z-index: 1;
 }

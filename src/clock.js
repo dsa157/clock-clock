@@ -132,11 +132,28 @@ export class Clock {
 export class ClockGrid {
   constructor(container, gridDef) {
     this.container = container;
+    
+    // Validate grid structure
+    if (!this.constructor.isValidGrid(gridDef)) {
+      console.warn('Invalid grid - using fallback');
+      gridDef = this.constructor.createFallbackGrid();
+    }
+
     this.gridDef = gridDef;
     this.clocks = [];
     this.rows = gridDef.length;
     this.cols = gridDef[0].length;
     this.render();
+  }
+
+  static isValidGrid(grid) {
+    return Array.isArray(grid) && 
+           grid.length === 8 && 
+           grid.every(row => Array.isArray(row) && row.length === 15);
+  }
+
+  static createFallbackGrid() {
+    return Array(8).fill().map(() => Array(15).fill(0));
   }
 
   render() {
@@ -163,13 +180,13 @@ export class ClockGrid {
   }
 
   update(gridDef) {
-    console.log('ClockGrid.update() called with:', gridDef);
+    // console.log('ClockGrid.update() called with:', gridDef);
     if (gridDef) this.gridDef = gridDef;
     
     this.clocks.forEach((row, y) => {
       row.forEach((clock, x) => {
         const timeStr = this.gridDef[y][x];
-        console.log(`Updating clock at (${x},${y}) with time:`, timeStr);
+        // console.log(`Updating clock at (${x},${y}) with time:`, timeStr);
         clock.update(timeStr);
       });
     });

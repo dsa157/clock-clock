@@ -18,16 +18,120 @@
     import { ClockGrid } from './clock.js';
     import digitPatterns from './digits.json' assert { type: 'json' };
     import { TimeDisplay } from './time-display.js';
+    import patterns from './patterns.json' assert { type: 'json' };
+    import transitions from './transitions.json' assert { type: 'json' };
     
     // Initialize display
     const timeDisplay = new TimeDisplay(digitPatterns);
     const gridContainer = document.getElementById('clock-grid');
-    const clockGrid = new ClockGrid(gridContainer, timeDisplay.updateWithCurrentTime());
     
-    // Update every second
-    setInterval(() => {
-      clockGrid.update(timeDisplay.updateWithCurrentTime());
-    }, 1000);
+    // Get Current Time pattern WITH borders
+    const currentTimePattern = patterns.find(p => p.name === 'Current Time');
+    
+    // Verify pattern has borders
+    if (!currentTimePattern.grid || currentTimePattern.grid.length < 3 || 
+        currentTimePattern.grid[0].length < 3) {
+      throw new Error('Current Time pattern missing border definition');
+    }
+    
+    // Create initial grid WITH borders
+    const initialGrid = JSON.parse(JSON.stringify(currentTimePattern.grid));
+    const timeGrid = timeDisplay.updateWithCurrentTime();
+    
+    // Insert time at EXACT (1,1) offset within borders
+    for (let i = 0; i < timeGrid.length && i < initialGrid.length-2; i++) {
+      for (let j = 0; j < timeGrid[i].length && j < initialGrid[i].length-2; j++) {
+        initialGrid[i+1][j+1] = timeGrid[i][j];
+      }
+    }
+    
+    // Initialize clock with bordered pattern
+    const clockGrid = new ClockGrid(gridContainer, initialGrid);
+    
+    // Update function preserving borders
+    const updateCurrentTimeDisplay = () => {
+      const updatedTimeGrid = timeDisplay.updateWithCurrentTime();
+      const grid = JSON.parse(JSON.stringify(currentTimePattern.grid));
+      
+      for (let i = 0; i < updatedTimeGrid.length && i+1 < grid.length-1; i++) {
+        for (let j = 0; j < updatedTimeGrid[i].length && j+1 < grid[i+1].length-1; j++) {
+          grid[i+1][j+1] = updatedTimeGrid[i][j];
+        }
+      }
+      return grid;
+    };
+    
+    // Pattern cycle manager
+    class PatternCycle {
+      constructor() {
+        this.currentIndex = 0;
+        this.transitionTimeout = null;
+      }
+
+      getRandomPattern() {
+        const nonCurrentTimePatterns = patterns.filter(p => p.name !== 'Current Time');
+        return nonCurrentTimePatterns[Math.floor(Math.random() * nonCurrentTimePatterns.length)];
+      }
+
+      startCycle() {
+        this.runTransition();
+      }
+
+      runTransition() {
+        if (this.transitionTimeout) clearTimeout(this.transitionTimeout);
+        
+        const transition = transitions.transitions[this.currentIndex];
+        let nextPattern;
+        
+        if (transition.pattern === 'Current Time') {
+          // Initialize with combined time + pattern
+          nextPattern = {
+            ...currentTimePattern,
+            grid: updateCurrentTimeDisplay()
+          };
+          clockGrid.update(nextPattern.grid);
+          
+          // Update continuously
+          const updateInterval = setInterval(() => {
+            clockGrid.update(updateCurrentTimeDisplay());
+          }, 1000);
+          
+          // Setup transition to next pattern
+          this.transitionTimeout = setTimeout(() => {
+            clearInterval(updateInterval);
+            this.currentIndex = (this.currentIndex + 1) % transitions.transitions.length;
+            const nextTransition = transitions.transitions[this.currentIndex];
+            let targetPattern;
+            
+            if (nextTransition.pattern === 'Current Time') {
+              targetPattern = {
+                ...currentTimePattern,
+                grid: updateCurrentTimeDisplay()
+              };
+            } else {
+              targetPattern = this.getRandomPattern();
+            }
+            
+            // Smooth transition to next pattern
+            clockGrid.animateGrid(clockGrid.currentGrid, targetPattern.grid, 
+                                 nextTransition.duration * 1000, () => {
+              this.runTransition();
+            });
+          }, transition.duration * 1000);
+        } else {
+          nextPattern = this.getRandomPattern();
+          clockGrid.animateGrid(clockGrid.currentGrid, nextPattern.grid, 
+                               transition.duration * 1000, () => {
+            this.currentIndex = (this.currentIndex + 1) % transitions.transitions.length;
+            this.runTransition();
+          });
+        }
+      }
+    }
+
+    // Start the cycle
+    const patternCycle = new PatternCycle();
+    patternCycle.startCycle();
   </script>
 </body>
 </html>

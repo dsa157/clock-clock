@@ -1,8 +1,9 @@
 * do not use any code that vill violate Content Security Policy 
 * do not suggest moving files into the public folder. keep them in src
+* this is a vite application
+* run it on port 5173
+* if that poert is not available, kill whatever is running on it and try again
+* Use smooth animations between pattern updates
+* use styles.css for global styling
+* when creating new test files, use the same imports as previous test files
 
-## Test Page Access
-
-- The test clock is available at: `http://localhost:5173/test`
-- This routes through Vite's proxy to `/src/test.html`
-- Direct file access may not work due to module resolution
