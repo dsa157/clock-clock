@@ -1,3 +1,24 @@
+/*
+ * Clock-Clock Stylesheet
+ * Version: 2026.09.21.17.25.00
+ * Description: Styles and layout for the 15x8 Clock-Clock matrix display
+ */
+
+/* Clock Face & Theme Default Styles */
+:root {
+  /* Default parameter values with reference comments */
+  --hour-hand-thickness: 6px;   /* Default: 6px */
+  --minute-hand-thickness: 6px; /* Default: 6px */
+  --hour-hand-length: 0.6;      /* Default: 0.6 (percentage of radius) */
+  --minute-hand-length: 0.8;    /* Default: 0.8 (percentage of radius) */
+  --bg-color: #111111;          /* Default: #111111 */
+  --grid-bg-color: #111111;     /* Default: #111111 */
+  --clock-face-color: #181818;  /* Default: #181818 */
+  --clock-border-color: #282828;/* Default: #282828 */
+  --clock-hand-color: #ffffff;  /* Default: #ffffff */
+  --container-shadow: rgba(0,0,0,0.5); /* Default: rgba(0,0,0,0.5) */
+}
+
 /* Reset and Base Styles */
 body {
   margin: 0;
@@ -6,10 +27,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #111;
+  background: var(--bg-color);
   overflow: hidden;
-  color: white; 
+  color: var(--clock-hand-color); 
   font-family: sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Clock Grid Container */
@@ -20,7 +42,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #000;
+  background: var(--bg-color);
 }
 
 #clock-grid {
@@ -29,11 +51,12 @@ body {
   grid-template-rows: repeat(8, 60px);
   gap: 8px;
   margin: 0 auto;
-  background: #111;
+  background: var(--grid-bg-color);
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px var(--container-shadow);
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 /* Clock Elements */

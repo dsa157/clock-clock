@@ -1,5 +1,22 @@
+/**
+ * Clock Component
+ * Version: 2026.09.21.17.25.00
+ * Description: Renders and animates an individual analog clock with hour and minute hands
+ */
+
 import digits from './digits.json';
 import { TimeDisplay } from './time-display.js';
+
+// Default parameters with suggested reference values
+const DEFAULT_RADIUS_RATIO = 0.9;          // Default: 0.9 (90% of half canvas dimension)
+const DEFAULT_BORDER_WIDTH = 1.0;          // Default: 1.0 (border line width)
+const DEFAULT_HOUR_THICKNESS = 6.0;        // Default: 6.0 (px)
+const DEFAULT_MINUTE_THICKNESS = 6.0;      // Default: 6.0 (px)
+const DEFAULT_HOUR_LENGTH = 0.6;           // Default: 0.6 (fraction of radius)
+const DEFAULT_MINUTE_LENGTH = 0.8;         // Default: 0.8 (fraction of radius)
+const DEFAULT_FACE_COLOR = '#181818';      // Default: #181818
+const DEFAULT_BORDER_COLOR = '#282828';    // Default: #282828
+const DEFAULT_HAND_COLOR = '#ffffff';      // Default: #ffffff
 
 const DIGITS = digits;
 
@@ -85,31 +102,31 @@ export class Clock {
     // Draw clock face
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
-    const radius = Math.min(centerX, centerY) * 0.9;
+    const radius = Math.min(centerX, centerY) * DEFAULT_RADIUS_RATIO;
 
     const rootStyles = getComputedStyle(document.documentElement);
-    const hourThickness = parseFloat(rootStyles.getPropertyValue('--hour-hand-thickness'));
-    const minuteThickness = parseFloat(rootStyles.getPropertyValue('--minute-hand-thickness'));
-    const hourLength = parseFloat(rootStyles.getPropertyValue('--hour-hand-length'));
-    const minuteLength = parseFloat(rootStyles.getPropertyValue('--minute-hand-length'));
-    const faceColor = rootStyles.getPropertyValue('--clock-face-color') || '#111';
-    const borderColor = rootStyles.getPropertyValue('--clock-border-color') || '#333';
+    const hourThickness = parseFloat(rootStyles.getPropertyValue('--hour-hand-thickness')) || DEFAULT_HOUR_THICKNESS;
+    const minuteThickness = parseFloat(rootStyles.getPropertyValue('--minute-hand-thickness')) || DEFAULT_MINUTE_THICKNESS;
+    const hourLength = parseFloat(rootStyles.getPropertyValue('--hour-hand-length')) || DEFAULT_HOUR_LENGTH;
+    const minuteLength = parseFloat(rootStyles.getPropertyValue('--minute-hand-length')) || DEFAULT_MINUTE_LENGTH;
+    const faceColor = rootStyles.getPropertyValue('--clock-face-color').trim() || DEFAULT_FACE_COLOR;
+    const borderColor = rootStyles.getPropertyValue('--clock-border-color').trim() || DEFAULT_BORDER_COLOR;
+    const handColor = rootStyles.getPropertyValue('--clock-hand-color').trim() || DEFAULT_HAND_COLOR;
 
     this.ctx.beginPath();
     this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     this.ctx.fillStyle = faceColor;
     this.ctx.fill();
     this.ctx.strokeStyle = borderColor;
-    this.ctx.lineWidth = 1;
+    this.ctx.lineWidth = DEFAULT_BORDER_WIDTH;
     this.ctx.stroke();
 
     // Draw hands
-    this.drawHand(hourAngle, radius * hourLength, hourThickness);
-    
-    this.drawHand(minuteAngle, radius * minuteLength, minuteThickness);
+    this.drawHand(hourAngle, radius * hourLength, hourThickness, handColor);
+    this.drawHand(minuteAngle, radius * minuteLength, minuteThickness, handColor);
   }
 
-  drawHand(angle, length, thickness) {
+  drawHand(angle, length, thickness, handColor = DEFAULT_HAND_COLOR) {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
     
@@ -122,7 +139,7 @@ export class Clock {
       centerX + Math.sin(angle * Math.PI / 180) * length,
       centerY - Math.cos(angle * Math.PI / 180) * length
     );
-    this.ctx.strokeStyle = '#fff';
+    this.ctx.strokeStyle = handColor;
     this.ctx.lineWidth = thickness;
     this.ctx.stroke();
     
